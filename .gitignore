@@ -1,0 +1,7 @@
+checkpoints/
+datasets/
+test_images/
+venv/
+.idea/
+__pycache__/
+BFM/*
