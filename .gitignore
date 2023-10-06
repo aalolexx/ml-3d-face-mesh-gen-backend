@@ -5,3 +5,4 @@ venv/
 .idea/
 __pycache__/
 BFM/*
+shape_predictor_68_face_landmarks.dat
