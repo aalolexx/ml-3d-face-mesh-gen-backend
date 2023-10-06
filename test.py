@@ -35,7 +35,7 @@ def read_data(im_path, lm_path, lm3d_std, to_tensor=True):
         lm = torch.tensor(lm).unsqueeze(0)
     return im, lm
 
-def main(rank, opt, name='examples'):
+def test(rank, opt, name='examples'):
     device = torch.device(rank)
     torch.cuda.set_device(device)
     model = create_model(opt)
