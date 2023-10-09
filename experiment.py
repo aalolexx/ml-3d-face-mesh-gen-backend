@@ -4,6 +4,7 @@ from test import test
 import cv2
 import dlib
 import os
+import numpy as np
 
 img_folder = "test_images"
 img_name = "alex"
@@ -64,11 +65,11 @@ for rect in face_rects:
         for lm in required_landmarks:
             file.write(str(lm.x) + " " + str(lm.y) + '\n')
 
-    #cv2.imshow("Image", image)
-    #cv2.waitKey(0)
-
 opt = TestOptions().parse()
 opt.img_folder = img_folder
 opt.epoch = 20
 opt.name = "pretrained"
 test(0, opt,opt.img_folder)
+
+cv2.imshow("Image", image)
+cv2.waitKey(0)

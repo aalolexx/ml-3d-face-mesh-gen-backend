@@ -70,5 +70,5 @@ def test(rank, opt, name='examples'):
 
 if __name__ == '__main__':
     opt = TestOptions().parse()  # get test options
-    main(0, opt,opt.img_folder)
+    test(0, opt,opt.img_folder)
     
