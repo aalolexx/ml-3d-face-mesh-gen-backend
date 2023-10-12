@@ -4,7 +4,8 @@ test_images/
 venv/
 .idea/
 __pycache__/
-BFM_2009/*
-BFM_2019/*
+*/BFM_2009/*
+*/BFM_2019/*
 shape_predictor_68_face_landmarks.dat
 playground/
+nvdiffrast/docs/
