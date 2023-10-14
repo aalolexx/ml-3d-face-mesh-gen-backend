@@ -7,5 +7,10 @@ __pycache__/
 */BFM_2009/*
 */BFM_2019/*
 shape_predictor_68_face_landmarks.dat
-playground/
+*/playground/lfwcrop_grey/*
+*/playground/face-coeffs/*
+*/playground/pics/*
+*/playground/*.png
+*/playground/*.jpg
+*/playground/*.obj
 nvdiffrast/docs/

@@ -7,7 +7,7 @@ import os
 import numpy as np
 
 img_folder = "test_images"
-img_name = "alex"
+img_name = "tupac1"
 img_extension = "jpg"
 landmarks_folder = img_folder + "/detections"
 
@@ -21,6 +21,8 @@ predictor = dlib.shape_predictor(datFile)
 image = cv2.imread(img_folder + "/" + img_name + "." + img_extension)
 #image = cv2.resize(image, (600, 500))
 image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # TODO check if its neccessary to convert to gray
+
+# TODO scale image
 
 # detect the faces
 face_rects = detector(image_gray)
