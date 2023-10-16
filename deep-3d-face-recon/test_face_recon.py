@@ -68,6 +68,41 @@ def test(rank, opt, name='examples'):
         model.save_mesh(os.path.join(visualizer.img_dir, name.split(os.path.sep)[-1], 'epoch_%s_%06d'%(opt.epoch, 0),img_name+'.obj')) # save reconstruction meshes
         model.save_coeff(os.path.join(visualizer.img_dir, name.split(os.path.sep)[-1], 'epoch_%s_%06d'%(opt.epoch, 0),img_name+'.mat')) # save predicted coefficients
 
+#
+# Own custom method to just get the coefficients without visualizations
+#
+# TODO check if its better in face-identification-test dir
+def get_coeffs_from_image(rank, opt, name='examples'):
+    device = torch.device(rank)
+    torch.cuda.set_device(device)
+    model = create_model(opt)
+    model.setup(opt)
+    model.device = device
+    model.parallelize()
+    model.eval()
+    im_path, lm_path = get_data_path(name)
+    lm3d_std = load_lm3d(opt.bfm_folder)
+
+    coeff_dict = {}
+
+
+    for i in range(len(im_path)):
+        print("..." + str(i), im_path[i])
+        img_name = im_path[i].split(os.path.sep)[-1].replace('.png', '').replace('.jpg', '')
+        if not os.path.isfile(lm_path[i]):
+            print("%s is not found !!!" % lm_path[i])
+            continue
+        im_tensor, lm_tensor = read_data(im_path[i], lm_path[i], lm3d_std)
+        data = {
+            'imgs': im_tensor,
+            'lms': lm_tensor
+        }
+        model.set_input(data)  # unpack data from data loader
+        model.test()  # run inference
+        coeff_dict[img_name] = model.pred_coeffs_dict
+
+    return coeff_dict
+
 if __name__ == '__main__':
     opt = TestOptions().parse()  # get test options
     test(0, opt,opt.img_folder)

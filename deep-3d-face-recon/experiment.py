@@ -1,5 +1,5 @@
 from options.test_options import TestOptions
-from test import test
+from test_face_recon import test
 
 import cv2
 import dlib

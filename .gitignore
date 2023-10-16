@@ -14,3 +14,7 @@ shape_predictor_68_face_landmarks.dat
 */playground/*.jpg
 */playground/*.obj
 nvdiffrast/docs/
+*/data/input/*
+*/data/output/*
+*/data/working/*
+*/data/misc/*
