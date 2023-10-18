@@ -7,7 +7,7 @@ import os
 import numpy as np
 
 img_folder = "test_images"
-img_name = "tupac1"
+img_name = "test"
 img_extension = "jpg"
 landmarks_folder = img_folder + "/detections"
 

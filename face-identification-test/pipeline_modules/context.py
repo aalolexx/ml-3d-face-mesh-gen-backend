@@ -1,4 +1,15 @@
 from dataclasses import dataclass
+from typing import List
+
+@dataclass
+class TestingEntry:
+    id: int
+    method: str
+    gallery_image_file_name: str
+    input_image_file_name: str
+    is_actual_match: bool
+    prediction: float
+
 
 @dataclass
 class Context:
@@ -7,3 +18,4 @@ class Context:
     working_dir_path: str
     misc_dir_path: str
     deep_3d_coeffs: dict
+    testing_entries: List[TestingEntry]

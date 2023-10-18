@@ -119,7 +119,7 @@ class BaseOptions():
             print("permission error {}".format(error))
             pass
 
-    def parse(self):
+    def parse(self, print_options=True):
         """Parse our options, create checkpoints directory suffix, and set up gpu device."""
         opt = self.gather_options()
         opt.isTrain = self.isTrain   # train or test
@@ -164,6 +164,8 @@ class BaseOptions():
                     opt.epoch_count = int(opt.epoch) + 1
                     
 
-        self.print_options(opt)
+        if print_options:
+            self.print_options(opt)
+
         self.opt = opt
         return self.opt
