@@ -1,14 +1,19 @@
 from dataclasses import dataclass
-from typing import List
+from typing import Dict, List
 
 @dataclass
-class TestingEntry:
-    id: int
+class TestingResultEntry:
+    open_testing_entry_id: int
     method: str
+    prediction: float
+
+
+@dataclass
+class OpenTestingEntry:
+    # id --> dict key
     gallery_image_file_name: str
     input_image_file_name: str
     is_actual_match: bool
-    prediction: float
 
 
 @dataclass
@@ -18,4 +23,6 @@ class Context:
     working_dir_path: str
     misc_dir_path: str
     deep_3d_coeffs: dict
-    testing_entries: List[TestingEntry]
+    face_recon_2d_encodings: dict
+    open_testing_entry: Dict[int, OpenTestingEntry]
+    testing_result_entries: List[TestingResultEntry]

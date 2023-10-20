@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../../deep-3d-face-recon')
+sys.path.append('../../../deep-3d-face-recon')
 
 from termcolor import cprint
 
@@ -9,8 +9,10 @@ from test_face_recon import get_coeffs_from_image
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
 
+# TODO optional: Try to pass detections as var and not as txt file
+
 class Deep3DCoefficientGenerator:
-    """Runs the deep 3d face_recon network and saves the coefficients to a file"""
+    """Runs the deep 3d face_recon network and saves the coefficients to the context var"""
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('Deep3DCoefficientGenerator: started', 'cyan')
@@ -24,7 +26,7 @@ class Deep3DCoefficientGenerator:
         opt.name = 'pretrained' # TODO get model opts globally
 
         try:
-            context.deep_3d_coeffs = get_coeffs_from_image(0, opt, opt.img_folder)
+            context.deep_3d_coeffs = get_coeffs_from_image(0, opt, opt.img_folder) # dict id -> file name
             cprint('Deep3DCoefficientGenerator: done', 'green')
             next_step(context)
         except Exception as error:

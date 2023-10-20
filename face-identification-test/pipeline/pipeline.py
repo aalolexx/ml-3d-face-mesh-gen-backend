@@ -5,6 +5,8 @@
 # modified to be compatible with python 3.6
 #
 
+from termcolor import cprint
+
 from abc import abstractmethod
 from typing import Generic, List, TypeVar, Callable, Generator, Union, Iterable, Optional
 
@@ -26,8 +28,10 @@ class PipelineCursor(Generic[Context]):
 
     def __call__(self, context: Context) -> None:
         if not self.queue:
+            cprint('Pipeline Progress: ALL STEPS DONE', 'green')
             return
         current_step = self.queue[0]
+        cprint('Pipeline Progress: ' + str(len(self.queue)) + ' steps left', 'cyan')
         next_step = PipelineCursor(self.queue[1:], self.error_handler)
 
         try:

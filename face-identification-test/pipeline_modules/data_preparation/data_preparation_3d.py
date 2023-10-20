@@ -75,13 +75,14 @@ class DataPreparation3D:
 
 
     def remove_corrupt_image(self, context, full_image_path, file_name):
+        # TODO mention in thesis, that this may cause data bias in favour of the 3d model
         # Remove actual file
         cprint('failed to find a face rect for image: ' + file_name, 'red')
         os.remove(full_image_path)
         cprint('deleted image image from working dir: ' + file_name, 'red')
         # Remove the respective testing entry
-        for testing_entry in context.testing_entries:
+        for id, testing_entry in context.open_testing_entry.items():
             if testing_entry.gallery_image_file_name == file_name or testing_entry.input_image_file_name == file_name:
-                cprint('removing item from testing_entries with id: ' + str(testing_entry.id), 'red')
-                context.testing_entries.remove(testing_entry)
+                cprint('removing item from testing_entries with id: ' + str(id), 'red')
+                del context.open_testing_entry[id]
                 break

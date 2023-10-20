@@ -5,7 +5,7 @@ from termcolor import cprint
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
-from pipeline_modules.context import TestingEntry
+from pipeline_modules.context import OpenTestingEntry
 
 
 class DataPreparationLFW:
@@ -33,7 +33,7 @@ class DataPreparationLFW:
         complete_lfw_dataset_dir = context.input_dir_path + '/' + self._lfw_dataset_dir
         entry_counter = 0
 
-        # Loop trough all matches, copy file and prepare testing entry
+        # Loop through all matches, copy file and prepare testing entry
         with open(complete_lfw_dataset_dir + '/' + self._csv_matchpairs_path, 'r') as file:
             csv_reader = csv.reader(file)
             next(csv_reader)  # skip header line
@@ -41,14 +41,7 @@ class DataPreparationLFW:
             for row in csv_reader:
                 self.copy_image_to_working_dir(context, row[0], int(row[1]), str(entry_counter) + '_g.jpg')
                 self.copy_image_to_working_dir(context, row[0], int(row[2]), str(entry_counter) + '_i.jpg')
-                context.testing_entries.append(TestingEntry(
-                    id=entry_counter,
-                    method=None,
-                    gallery_image_file_name=str(entry_counter) + '_g.jpg',
-                    input_image_file_name=str(entry_counter) + '_i.jpg',
-                    is_actual_match=True,
-                    prediction=None
-                ))
+                self.add_open_testing_entry(context, entry_counter, True)
                 entry_counter += 1
                 i += 1
                 if i >= self._entry_count_limit:
@@ -62,14 +55,7 @@ class DataPreparationLFW:
             for row in csv_reader:
                 self.copy_image_to_working_dir(context, row[0], int(row[1]), str(entry_counter) + '_g.jpg')
                 self.copy_image_to_working_dir(context, row[2], int(row[3]), str(entry_counter) + '_i.jpg')
-                context.testing_entries.append(TestingEntry(
-                    id=entry_counter,
-                    method=None,
-                    gallery_image_file_name=str(entry_counter) + '_g.jpg',
-                    input_image_file_name=str(entry_counter) + '_i.jpg',
-                    is_actual_match=False,
-                    prediction=None
-                ))
+                self.add_open_testing_entry(context, entry_counter, False)
                 entry_counter += 1
                 i += 1
                 if i >= self._entry_count_limit:
@@ -85,7 +71,16 @@ class DataPreparationLFW:
         lfw_image_path = context.input_dir_path + '/' + self.get_lfw_image_path(name, num)
         shutil.copy(lfw_image_path, context.working_dir_path + '/' + new_image_name)
 
+
     def get_lfw_image_path(self, name: str, num: int):
         padded_number = '{:04d}'.format(num)
         return self._lfw_dataset_dir + '/lfw-deepfunneled/lfw-deepfunneled/'\
                 + name + '/' + name + '_' + padded_number + '.jpg'
+
+
+    def add_open_testing_entry(self, context, id, is_actual_match):
+        context.open_testing_entry[id] = OpenTestingEntry(
+            gallery_image_file_name=str(id) + '_g.jpg',
+            input_image_file_name=str(id) + '_i.jpg',
+            is_actual_match=is_actual_match,
+        )
