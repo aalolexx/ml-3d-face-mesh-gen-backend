@@ -7,6 +7,7 @@ from pipeline_modules.data_preparation.data_preparation_3d import DataPreparatio
 from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparationLFW
 from pipeline_modules.image_analysis.deep_3d_coefficient_generator import Deep3DCoefficientGenerator
 from pipeline_modules.image_analysis.face_recon_2d_encoder import FaceRecon2DEncoder
+from pipeline_modules.face_comparison.coefficient_based_compare_3d import CoefficientBasedCompare3D
 
 # Set up Context
 
@@ -31,6 +32,7 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
 # TODO get path from global
 pipeline = Pipeline[Context](
     # Data Preparations
+    # TODO for dataset data preparation -> define a switch before that and
     DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 5),
     DataPreparation3D('detections', ctx.misc_dir_path + '/shape_predictor_68_face_landmarks.dat'),
 
@@ -38,10 +40,10 @@ pipeline = Pipeline[Context](
     Deep3DCoefficientGenerator(),
 
     # 2D Analysis
-    FaceRecon2DEncoder()
+    FaceRecon2DEncoder(),
 
     # Face Comparison Methods
-    # TODO 3D- Coefficient Based <-- PRIO 1
+    CoefficientBasedCompare3D()
     # TODO 3D- Viewport Normalization Based
     # TODO 3D- 3D Shape and Texture
     # TODO 2D- MMOD Comparison <-- PRIO 1
