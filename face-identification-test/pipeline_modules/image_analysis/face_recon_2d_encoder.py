@@ -26,8 +26,8 @@ class FaceRecon2DEncoder:
             if len(gallery_image_encodings) < 1 or len(input_image_encodings) < 1:
                 raise ValueError('Could not locate a face in image with id ' + str(id))
 
-            context.face_recon_2d_encodings[str(id) + '_g'] = gallery_image_encodings[0]
-            context.face_recon_2d_encodings[str(id) + '_i'] = input_image_encodings[0]
+            context.face_recognition_2d_encodings[str(id) + '_g'] = gallery_image_encodings[0]
+            context.face_recognition_2d_encodings[str(id) + '_i'] = input_image_encodings[0]
 
         cprint('FaceRecon2DEncoder: done', 'green')
         next_step(context)

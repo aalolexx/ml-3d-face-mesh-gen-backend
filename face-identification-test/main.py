@@ -8,6 +8,7 @@ from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparati
 from pipeline_modules.image_analysis.deep_3d_coefficient_generator import Deep3DCoefficientGenerator
 from pipeline_modules.image_analysis.face_recon_2d_encoder import FaceRecon2DEncoder
 from pipeline_modules.face_comparison.coefficient_based_compare_3d import CoefficientBasedCompare3D
+from pipeline_modules.face_comparison.face_recognition_compare_2d import FaceRecognitionCompare2D
 
 # Set up Context
 
@@ -17,7 +18,7 @@ ctx = Context(
     working_dir_path='data/working',
     misc_dir_path='data/misc',
     deep_3d_coeffs={},
-    face_recon_2d_encodings={},
+    face_recognition_2d_encodings={},
     open_testing_entry={},
     testing_result_entries=[]
 )
@@ -43,10 +44,11 @@ pipeline = Pipeline[Context](
     FaceRecon2DEncoder(),
 
     # Face Comparison Methods
-    CoefficientBasedCompare3D()
+    CoefficientBasedCompare3D(),
     # TODO 3D- Viewport Normalization Based
     # TODO 3D- 3D Shape and Texture
     # TODO 2D- MMOD Comparison <-- PRIO 1
+    FaceRecognitionCompare2D()
     # TODO 2D- HoG Comparison
 
     # Result Analysis
@@ -56,3 +58,4 @@ pipeline = Pipeline[Context](
 
 
 pipeline(ctx, error_handler)
+print(ctx.testing_result_entries)

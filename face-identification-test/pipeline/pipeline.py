@@ -28,7 +28,9 @@ class PipelineCursor(Generic[Context]):
 
     def __call__(self, context: Context) -> None:
         if not self.queue:
+            cprint('------------------------------------', 'green')
             cprint('Pipeline Progress: ALL STEPS DONE', 'green')
+            cprint('------------------------------------', 'green')
             return
         current_step = self.queue[0]
         cprint('Pipeline Progress: ' + str(len(self.queue)) + ' steps left', 'cyan')

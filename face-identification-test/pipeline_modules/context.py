@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from typing import Dict, List
+from pipeline_util.enums import ComparisonMethods
 
 @dataclass
 class TestingResultEntry:
     open_testing_entry_id: int
-    method: str
+    method: ComparisonMethods
     prediction: float
 
 
@@ -23,6 +24,6 @@ class Context:
     working_dir_path: str
     misc_dir_path: str
     deep_3d_coeffs: dict
-    face_recon_2d_encodings: dict
+    face_recognition_2d_encodings: dict
     open_testing_entry: Dict[int, OpenTestingEntry]
     testing_result_entries: List[TestingResultEntry]
