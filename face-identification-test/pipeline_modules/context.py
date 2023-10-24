@@ -14,7 +14,7 @@ class OpenTestingEntry:
     # id --> dict key
     gallery_image_file_name: str
     input_image_file_name: str
-    is_actual_match: bool
+    is_actual_match: int
 
 
 @dataclass
@@ -27,3 +27,4 @@ class Context:
     face_recognition_2d_encodings: dict
     open_testing_entry: Dict[int, OpenTestingEntry]
     testing_result_entries: List[TestingResultEntry]
+    panda_dataframe: any

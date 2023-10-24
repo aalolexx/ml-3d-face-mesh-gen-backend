@@ -8,6 +8,7 @@ from termcolor import cprint
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
+from pipeline_util.file_util import remove_corrupt_image
 
 
 class DataPreparation3D:
@@ -44,7 +45,7 @@ class DataPreparation3D:
 
             # The Face may be covered to much or the image is corrupt. in this case warn the user and delete the image
             if len(face_rects) <= 0:
-                self.remove_corrupt_image(context, full_image_path, file_name)
+                remove_corrupt_image(context, full_image_path, file_name)
             else:
                 face_rect = face_rects[0] # TODO print a warning if more than 1 face on img
                 required_landmarks = self.get_required_landmarks(image, face_rect)
@@ -72,17 +73,3 @@ class DataPreparation3D:
         with open(detection_file_path, 'w') as file:
             for lm in landmarks:
                 file.write(str(lm.x) + ' ' + str(lm.y) + '\n')
-
-
-    def remove_corrupt_image(self, context, full_image_path, file_name):
-        # TODO mention in thesis, that this may cause data bias in favour of the 3d model
-        # Remove actual file
-        cprint('failed to find a face rect for image: ' + file_name, 'red')
-        os.remove(full_image_path)
-        cprint('deleted image image from working dir: ' + file_name, 'red')
-        # Remove the respective testing entry
-        for id, testing_entry in context.open_testing_entry.items():
-            if testing_entry.gallery_image_file_name == file_name or testing_entry.input_image_file_name == file_name:
-                cprint('removing item from testing_entries with id: ' + str(id), 'red')
-                del context.open_testing_entry[id]
-                break
