@@ -27,6 +27,9 @@ class ConfusionMatrixPlotter:
 
         fig, (ax1, ax2) = plt.subplots(ncols=2)
 
+        sns.set_theme()
+        sns.set_context('paper')
+
         sns.heatmap(confusion_1, annot=True, cmap='Blues', xticklabels=['Negative', 'Positive'],
                     yticklabels=['Negative', 'Positive'], ax=ax1, cbar=False)
         sns.heatmap(confusion_2, annot=True, cmap='Blues', xticklabels=['Negative', 'Positive'],

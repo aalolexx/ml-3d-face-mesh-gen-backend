@@ -1,6 +1,8 @@
 from termcolor import cprint
 from sklearn.metrics import roc_curve, roc_auc_score
 import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
@@ -23,16 +25,16 @@ class RocCurvePlotter:
         roc_auc_2 = roc_auc_score(pf_2['is_actual_match'], pf_2['prediction'])
 
         # Plot the ROC curve
-        plt.figure(figsize=(8, 6))
-        plt.plot(fpr_1, tpr_1, color='blue', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc_1))
-        plt.plot(fpr_2, tpr_2, color='green', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc_2))
-        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
+
+        sns.set_theme()
+        sns.set_context('paper')
+        fig, ax = plt.subplots()
+        plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')
+        ax.set_xlabel('False Positive Rate')
+        ax.set_ylabel('True Positive Rate')
         plt.title('ROC Curve')
-        plt.legend(loc='lower right')
+        sns.lineplot(x=fpr_1, y=tpr_1, label='ROC CB_3D (AUC = {:.2f})'.format(roc_auc_1), color='seagreen')
+        sns.lineplot(x=fpr_2, y=tpr_2, label='ROC CB_2D (AUC = {:.2f})'.format(roc_auc_2), color='royalblue')
         plt.show()
 
         cprint('RocCurvePlotter: done', 'green')

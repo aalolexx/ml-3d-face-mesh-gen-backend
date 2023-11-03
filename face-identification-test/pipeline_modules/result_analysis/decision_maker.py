@@ -1,5 +1,4 @@
 from termcolor import cprint
-import pandas as pd
 from sklearn.metrics import roc_curve, roc_auc_score
 import numpy as np
 
