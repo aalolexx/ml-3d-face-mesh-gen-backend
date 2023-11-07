@@ -11,6 +11,7 @@ from pipeline_modules.image_analysis.face_recon_2d_encoder import FaceRecon2DEnc
 from pipeline_modules.face_comparison.coefficient_based_compare_3d import CoefficientBasedCompare3D
 from pipeline_modules.face_comparison.face_recognition_compare_2d import FaceRecognitionCompare2D
 from pipeline_modules.result_analysis.roc_curve_plotter import RocCurvePlotter
+from pipeline_modules.result_analysis.rotation_based_bar_plotter import RotationBasedBarPlotter
 from pipeline_modules.result_analysis.confusion_matrix_plotter import ConfusionMatrixPlotter
 from pipeline_modules.result_analysis.result_table_pkl_reader import ResultTablePKLReader
 from pipeline_modules.result_analysis.result_table_pkl_saver import ResultTablePKLSaver
@@ -68,20 +69,29 @@ pipeline_part_analysis = Pipeline[Context](
     ResultTablePKLSaver('comparison_results_pie.pkl')
 )
 
-ctx_part_visualization = get_new_context()
-pipeline_part_visualization = Pipeline[Context](
+ctx_lfw_visualization = get_new_context()
+pipeline_visualization_lfw = Pipeline[Context](
     # Read Results from previous pipeline part
-    ResultTablePKLReader('comparison_results_pie.pkl'),
-
+    ResultTablePKLReader('comparison_results_lfw.pkl'),
     # Make Decisions from the given predictions
     DecisionMaker(),
-
     # Result Plotting
     RocCurvePlotter(''), # zb pf["rotation_angle"] == -60
     ConfusionMatrixPlotter('')
 )
 
+ctx_pie_visualization = get_new_context()
+pipeline_visualization_pie = Pipeline[Context](
+    # Read Results from previous pipeline part
+    ResultTablePKLReader('comparison_results_pie.pkl'),
+    # Make Decisions from the given predictions
+    DecisionMaker(),
+    # Result Plotting
+    RotationBasedBarPlotter()
+)
 
 
-pipeline_part_analysis(ctx_part_analyzer, error_handler)
-pipeline_part_visualization(ctx_part_visualization, error_handler)
+#pipeline_part_analysis(ctx_part_analyzer, error_handler)
+
+#pipeline_visualization_lfw(ctx_lfw_visualization, error_handler)
+pipeline_visualization_pie(ctx_pie_visualization, error_handler)
