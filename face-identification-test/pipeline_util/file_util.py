@@ -3,6 +3,7 @@ import os
 
 def remove_corrupt_image(context, full_image_path, file_name):
     # TODO mention in thesis, that this may cause data bias in favour of the 3d or 2d model
+    # TODO move image to a folder of failed images for later analysis
     # Remove actual file
     cprint('failed to find a face rect for image: ' + file_name, 'red')
     os.remove(full_image_path)

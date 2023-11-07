@@ -15,8 +15,12 @@ class FaceRecognitionCompare2D:
         # Loop all open testing entries, get 2d encodings and save comparison result to testing results
         print('comparing ' + str(len(context.open_testing_entry.items())) + ' image pairs')
         for id, testing_entry in context.open_testing_entry.items():
-            gallery_image_encoding = context.face_recognition_2d_encodings[str(id) + '_g']
-            input_image_encoding = context.face_recognition_2d_encodings[str(id) + '_i']
+            gallery_image_encoding = context.face_recognition_2d_encodings[
+                testing_entry.gallery_image_file_name.split('.')[0]
+            ]
+            input_image_encoding = context.face_recognition_2d_encodings[
+                testing_entry.input_image_file_name.split('.')[0]
+            ]
             if gallery_image_encoding is not None and input_image_encoding is not None:
                 faces_distance = face_recognition.face_distance([gallery_image_encoding], input_image_encoding)[0]
                 faces_distance = 1 - faces_distance  # remap the value to have a unified 0 - 1 prediction

@@ -2,6 +2,7 @@ from termcolor import cprint
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+import pandas as pd
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
@@ -9,16 +10,26 @@ from pipeline_util.enums import ComparisonMethods
 
 class ConfusionMatrixPlotter:
     """Plots the Confusion Matrix from the context.panda_dataframe table"""
+    def __init__(self, additional_data_filter: str) -> None:
+        self._additional_data_filter = additional_data_filter
+
+
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('ConfusionMatrixPlotter: started', 'cyan')
 
         pf = context.panda_dataframe
+        if self._additional_data_filter:
+            pf = pf[eval(self._additional_data_filter)]
 
         pf["is_actual_match"] = pf["is_actual_match"].astype(int)
 
         pf_1 = pf[(pf.method == ComparisonMethods.COEFFICIENT_BASED_3D)]
         pf_2 = pf[(pf.method == ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D)]
+
+        #pd.set_option('display.max_columns', None)
+        #print(pf_1.head())
+        #print(pf_2.head())
 
         confusion_1 = confusion_matrix(pf_1['is_actual_match'], pf_1['decision'])
         confusion_2 = confusion_matrix(pf_2['is_actual_match'], pf_2['decision'])

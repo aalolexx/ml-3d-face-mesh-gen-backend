@@ -35,7 +35,7 @@ class DataPreparation3D:
         image_file_names = os.listdir(context.working_dir_path)
         print('DataPreparation3D: found ' + str(len(image_file_names)) + ' images in working dir')
         for file_name in image_file_names:
-            if not file_name.endswith('.jpg'):
+            if not '.' in file_name:
                 # skip directories
                 continue
 

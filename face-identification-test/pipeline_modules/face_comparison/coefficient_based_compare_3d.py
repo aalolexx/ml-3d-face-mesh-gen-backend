@@ -16,8 +16,12 @@ class CoefficientBasedCompare3D:
         # Loop all open testing entries, get 3d coeffs and save comparison result to testing results
         print('comparing ' + str(len(context.open_testing_entry.items())) + ' image pairs')
         for id, testing_entry in context.open_testing_entry.items():
-            gallery_image_coeffs = context.deep_3d_coeffs[str(id) + '_g']
-            input_image_coeffs = context.deep_3d_coeffs[str(id) + '_i']
+            gallery_image_coeffs = context.deep_3d_coeffs[
+                testing_entry.gallery_image_file_name.split('.')[0]
+            ]
+            input_image_coeffs = context.deep_3d_coeffs[
+                testing_entry.input_image_file_name.split('.')[0]
+            ]
             gallery_image_vector = np.concatenate([
                 gallery_image_coeffs['id'].cpu().numpy()[0],
                 gallery_image_coeffs['tex'].cpu().numpy()[0]

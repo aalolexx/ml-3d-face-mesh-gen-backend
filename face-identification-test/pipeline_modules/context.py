@@ -15,6 +15,8 @@ class OpenTestingEntry:
     gallery_image_file_name: str
     input_image_file_name: str
     is_actual_match: int
+    # Additional Infos:
+    rotation_angle: int
 
 
 @dataclass

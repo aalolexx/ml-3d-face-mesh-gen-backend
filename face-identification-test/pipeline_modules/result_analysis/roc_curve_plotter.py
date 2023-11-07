@@ -10,11 +10,17 @@ from pipeline_util.enums import ComparisonMethods
 
 class RocCurvePlotter:
     """Plots the ROC Curve from the context.panda_dataframe table"""
+    def __init__(self, additional_data_filter: str) -> None:
+        self._additional_data_filter = additional_data_filter
+
+
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('RocCurvePlotter: started', 'cyan')
 
         pf = context.panda_dataframe
+        if self._additional_data_filter:
+            pf = pf[eval(self._additional_data_filter)]
 
         pf_1 = pf[(pf.method == ComparisonMethods.COEFFICIENT_BASED_3D)]
         pf_2 = pf[(pf.method == ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D)]

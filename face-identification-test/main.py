@@ -5,6 +5,7 @@ from pipeline.pipeline import *
 from pipeline_modules.context import Context
 from pipeline_modules.data_preparation.data_preparation_3d import DataPreparation3D
 from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparationLFW
+from pipeline_modules.data_preparation.data_preparation_pie import DataPreparationPIE
 from pipeline_modules.image_analysis.deep_3d_coefficient_generator import Deep3DCoefficientGenerator
 from pipeline_modules.image_analysis.face_recon_2d_encoder import FaceRecon2DEncoder
 from pipeline_modules.face_comparison.coefficient_based_compare_3d import CoefficientBasedCompare3D
@@ -39,11 +40,14 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
     return
 
 
+lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 100)
+pie_prep_module = DataPreparationPIE('multi-pie', 100)
+
 # TODO get path from global
 pipeline_part_analysis = Pipeline[Context](
     # Data Preparations
     # TODO for dataset data preparation -> define a switch before that and
-    DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 100),
+    pie_prep_module,
     DataPreparation3D('detections', ctx_part_analyzer.misc_dir_path + '/shape_predictor_68_face_landmarks.dat'),
 
     # 3D Analysis
@@ -61,23 +65,23 @@ pipeline_part_analysis = Pipeline[Context](
     # TODO 2D- HoG Comparison
 
     # Save Results
-    ResultTablePKLSaver('comparison_results.pkl')
+    ResultTablePKLSaver('comparison_results_pie.pkl')
 )
-
 
 ctx_part_visualization = get_new_context()
 pipeline_part_visualization = Pipeline[Context](
     # Read Results from previous pipeline part
-    ResultTablePKLReader('comparison_results.pkl'),
+    ResultTablePKLReader('comparison_results_pie.pkl'),
 
     # Make Decisions from the given predictions
     DecisionMaker(),
 
     # Result Plotting
-    RocCurvePlotter(),
-    ConfusionMatrixPlotter()
+    RocCurvePlotter(''), # zb pf["rotation_angle"] == -60
+    ConfusionMatrixPlotter('')
 )
 
 
-#pipeline_part_analysis(ctx_part_analyzer, error_handler)
+
+pipeline_part_analysis(ctx_part_analyzer, error_handler)
 pipeline_part_visualization(ctx_part_visualization, error_handler)
