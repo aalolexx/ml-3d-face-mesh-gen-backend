@@ -33,7 +33,7 @@ class RotationBasedBarPlotter:
                     'rotation': rotation_angle,
                     'accuracy': accuracy,
                     'precision': precision,
-                    'count': len(method_results.index)
+                    'count': method_results['open_testing_entry_id'].count()
 
                 })
                 #print(str(rotation_angle) + ", " + str(method) + " -> " + str(accuracy) + " | " + str(precision))
@@ -43,12 +43,13 @@ class RotationBasedBarPlotter:
         sns.set_theme()
         sns.set_context('paper')
         fig, ax = plt.subplots()
-        ax.set_ylim(0.7, 1.1)
+        ax.set_ylim(0.4, 1)
         sns.barplot(x='rotation', y='accuracy', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue'])
+        sns.move_legend(ax, "lower right")
         plt.show()
 
-        fig, ax = plt.subplots()
-        ax.set_ylim(0.2, 1.2)
+        #fig, ax = plt.subplots()
+        #ax.set_ylim(0.2, 1)
         sns.barplot(x='rotation', y='precision', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue'])
         plt.show()
 

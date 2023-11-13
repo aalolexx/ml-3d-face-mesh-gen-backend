@@ -1,8 +1,6 @@
-from typing import List
-import shutil
 import os
 import cv2
-import dlib
+import mtcnn
 
 from termcolor import cprint
 
@@ -14,11 +12,9 @@ from pipeline_util.file_util import remove_corrupt_image
 class DataPreparation3D:
     """Collects all Images from Working Directory,
     and detects + saves landmarks for later deep 3D Face Recon use"""
-    def __init__(self, detection_subdir_name: str, dat_file_path: str) -> None:
+    def __init__(self, detection_subdir_name: str) -> None:
         self._detection_subdir_name = detection_subdir_name
-        self._dat_file_path = dat_file_path
-        self._detector = dlib.get_frontal_face_detector()
-        self._predictor = dlib.shape_predictor(dat_file_path)
+        self._detector = mtcnn.MTCNN()
 
 
     def __call__(self, context: Context, next_step: NextStep) -> None:
@@ -41,14 +37,14 @@ class DataPreparation3D:
 
             full_image_path = context.working_dir_path + '/' + file_name
             image = cv2.imread(full_image_path)
-            face_rects = self._detector(image)
+            face_rects = self._detector.detect_faces(image)
 
-            # The Face may be covered to much or the image is corrupt. in this case warn the user and delete the image
+            # The Face may be covered too much or the image is corrupt. in this case warn the user and delete the image
             if len(face_rects) <= 0:
                 remove_corrupt_image(context, full_image_path, file_name)
             else:
-                face_rect = face_rects[0] # TODO print a warning if more than 1 face on img
-                required_landmarks = self.get_required_landmarks(image, face_rect)
+                face_rect = face_rects[0]  # TODO print a warning if more than 1 face on img
+                required_landmarks = self.get_required_landmarks(face_rect)
                 image_name = file_name.split('.')[0]
                 detection_file_path = complete_detection_dir_path + '/' + image_name + '.txt'
                 self.write_landmarks_to_file(detection_file_path, required_landmarks)
@@ -57,19 +53,18 @@ class DataPreparation3D:
         next_step(context)
 
 
-    def get_required_landmarks(self, image, face_rect):
-        shape = self._predictor(image, face_rect)
+    def get_required_landmarks(self, face_rect):
         # Refered to dlib documentation to get the correct landmark indexes
         return [
-            shape.part(39),
-            shape.part(42),
-            shape.part(30),
-            shape.part(48),
-            shape.part(54)
+            face_rect['keypoints']['left_eye'],
+            face_rect['keypoints']['right_eye'],
+            face_rect['keypoints']['nose'],
+            face_rect['keypoints']['mouth_left'],
+            face_rect['keypoints']['mouth_right']
         ]
 
 
     def write_landmarks_to_file(self, detection_file_path, landmarks):
         with open(detection_file_path, 'w') as file:
             for lm in landmarks:
-                file.write(str(lm.x) + ' ' + str(lm.y) + '\n')
+                file.write(str(lm[0]) + ' ' + str(lm[1]) + '\n')

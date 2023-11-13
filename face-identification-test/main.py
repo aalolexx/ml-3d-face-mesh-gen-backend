@@ -38,18 +38,18 @@ ctx_part_analyzer = get_new_context()
 def error_handler(error: Exception, context: Context, next_step: NextStep):
     # TODO Error Handler
     print(error)
-    return
+    raise ValueError(error) from error
 
 
 lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 100)
-pie_prep_module = DataPreparationPIE('multi-pie', 100)
+pie_prep_module = DataPreparationPIE('multi-pie', 150)
 
 # TODO get path from global
 pipeline_part_analysis = Pipeline[Context](
     # Data Preparations
     # TODO for dataset data preparation -> define a switch before that and
     pie_prep_module,
-    DataPreparation3D('detections', ctx_part_analyzer.misc_dir_path + '/shape_predictor_68_face_landmarks.dat'),
+    DataPreparation3D('detections'),
 
     # 3D Analysis
     Deep3DCoefficientGenerator(),
@@ -76,7 +76,7 @@ pipeline_visualization_lfw = Pipeline[Context](
     # Make Decisions from the given predictions
     DecisionMaker(),
     # Result Plotting
-    RocCurvePlotter(''), # zb pf["rotation_angle"] == -60
+    RocCurvePlotter(''),  # zb pf["rotation_angle"] == -60
     ConfusionMatrixPlotter('')
 )
 
@@ -87,6 +87,7 @@ pipeline_visualization_pie = Pipeline[Context](
     # Make Decisions from the given predictions
     DecisionMaker(),
     # Result Plotting
+    RocCurvePlotter(''),
     RotationBasedBarPlotter()
 )
 

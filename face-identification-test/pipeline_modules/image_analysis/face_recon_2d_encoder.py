@@ -33,14 +33,19 @@ class FaceRecon2DEncoder:
             gallery_image_name = testing_entry.gallery_image_file_name.split('.')[0]
             input_image_name = testing_entry.input_image_file_name.split('.')[0]
 
-            if len(gallery_image_encodings) < 1 or len(input_image_encodings) < 1:
-                # TODO check why this happens so often
-                cprint('Could not locate a face in image with id ' + str(id), 'red')
+            if len(gallery_image_encodings) < 1:
+                cprint('Could not locate a face in gallery image ' + gallery_image_name, 'red')
                 context.face_recognition_2d_encodings[gallery_image_name] = None
-                context.face_recognition_2d_encodings[input_image_name] = None
             else:
                 context.face_recognition_2d_encodings[gallery_image_name] = gallery_image_encodings[0]
+
+            if len(input_image_encodings) < 1:
+                cprint('Could not locate a face in input image ' + input_image_name, 'red')
+                context.face_recognition_2d_encodings[input_image_name] = None
+            else:
                 context.face_recognition_2d_encodings[input_image_name] = input_image_encodings[0]
+
+            # TODO protocol failed etnreis
 
         cprint('FaceRecon2DEncoder: done', 'green')
         next_step(context)

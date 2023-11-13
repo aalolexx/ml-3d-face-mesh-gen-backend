@@ -6,11 +6,14 @@ def remove_corrupt_image(context, full_image_path, file_name):
     # TODO move image to a folder of failed images for later analysis
     # Remove actual file
     cprint('failed to find a face rect for image: ' + file_name, 'red')
-    os.remove(full_image_path)
-    cprint('deleted image image from working dir: ' + file_name, 'red')
+    #os.remove(full_image_path)
+    #cprint('deleted image image from working dir: ' + file_name, 'red')
     # Remove the respective testing entry
-    for id, testing_entry in context.open_testing_entry.items():
-        if testing_entry.gallery_image_file_name == file_name or testing_entry.input_image_file_name == file_name:
-            cprint('removing item from testing_entries with id: ' + str(id), 'red')
-            del context.open_testing_entry[id]
-            break
+    # TODO Check if its better to remove the entry
+    # delete_keys = []
+    # for id, testing_entry in context.open_testing_entry.items():
+    #     if testing_entry.gallery_image_file_name == file_name or testing_entry.input_image_file_name == file_name:
+    #         cprint('removing item from testing_entries with id: ' + str(id), 'red')
+    #         delete_keys.append(id)  # continue and not break since the file could appear in multiple testing entries
+    # for key in delete_keys:
+    #     del context.open_testing_entry[key]

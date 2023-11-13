@@ -26,17 +26,23 @@ use_opengl = True
 device = torch.device(0)
 torch.cuda.set_device(device)
 
+print('init done')
+
 alex1_coeffs = np.array([loadtxt('face-coeffs/alex1.csv', delimiter=',')]).astype(np.float32)
 alex2_coeffs = np.array([loadtxt('face-coeffs/alex2.csv', delimiter=',')]).astype(np.float32)
-mathis1_coeffs = np.array([loadtxt('face-coeffs/mathis1.csv', delimiter=',')]).astype(np.float32)
+alexSmile_coeffs = np.array([loadtxt('face-coeffs/alex_smile.csv', delimiter=',')]).astype(np.float32)
 obama1_coeffs = np.array([loadtxt('face-coeffs/obama1.csv', delimiter=',')]).astype(np.float32)
 tupac1_coeffs = np.array([loadtxt('face-coeffs/tupac1.csv', delimiter=',')]).astype(np.float32)
 
+print('file read')
+
 alex1_coeffs = torch.from_numpy(alex1_coeffs).to(device)
 alex2_coeffs = torch.from_numpy(alex2_coeffs).to(device)
-mathis1_coeffs = torch.from_numpy(mathis1_coeffs).to(device)
+alexSmile_coeffs = torch.from_numpy(alexSmile_coeffs).to(device)
 obama1_coeffs = torch.from_numpy(obama1_coeffs).to(device)
 tupac1_coeffs = torch.from_numpy(tupac1_coeffs).to(device)
+
+print('tensors created')
 
 
 #
@@ -57,6 +63,8 @@ fov = 2 * np.arctan(center / focal) * 180 / np.pi
 renderer = MeshRenderer(
     rasterize_fov=fov, znear=z_near, zfar=z_far, rasterize_size=int(2 * center), use_opengl=use_opengl
 )
+
+print('Model setup')
 
 #
 # CALCULATE WITH COEFFITIENS
@@ -113,14 +121,14 @@ def get_image(coeffs):
 
 alex1_coeffs_norm = torch.clone(alex1_coeffs)
 alex2_coeffs_norm = torch.clone(alex2_coeffs)
-mathis1_coeffs_norm = torch.clone(mathis1_coeffs)
+alexSmile_coeffs_norm = torch.clone(alexSmile_coeffs)
 obama1_coeffs_norm = torch.clone(obama1_coeffs)
 tupac1_coeffs_norm = torch.clone(tupac1_coeffs)
 
 # angles
 alex1_coeffs_norm = normalize_coefficients(alex1_coeffs_norm)
 alex2_coeffs_norm = normalize_coefficients(alex2_coeffs_norm)
-mathis1_coeffs_norm = normalize_coefficients(mathis1_coeffs_norm)
+alexSmile_coeffs_norm = normalize_coefficients(alexSmile_coeffs_norm)
 obama1_coeffs_norm = normalize_coefficients(obama1_coeffs_norm)
 tupac1_coeffs_norm = normalize_coefficients(tupac1_coeffs_norm)
 
@@ -128,13 +136,13 @@ tupac1_coeffs_norm = normalize_coefficients(tupac1_coeffs_norm)
 
 alex1_coeffs_noexp = torch.clone(alex1_coeffs_norm)
 alex2_coeffs_noexp = torch.clone(alex2_coeffs_norm)
-mathis1_coeffs_noexp = torch.clone(mathis1_coeffs_norm)
+alexSmile_coeffs_noexp = torch.clone(alexSmile_coeffs_norm)
 obama1_coeffs_noexp = torch.clone(obama1_coeffs_norm)
 tupac1_coeffs_noexp = torch.clone(tupac1_coeffs_norm)
 
 alex1_coeffs_noexp = remove_expression_coefficients(alex1_coeffs_noexp)
 alex2_coeffs_noexp = remove_expression_coefficients(alex2_coeffs_noexp)
-mathis1_coeffs_noexp = remove_expression_coefficients(mathis1_coeffs_noexp)
+alexSmile_coeffs_noexp = remove_expression_coefficients(alexSmile_coeffs_noexp)
 obama1_coeffs_noexp = remove_expression_coefficients(obama1_coeffs_noexp)
 tupac1_coeffs_noexp = remove_expression_coefficients(tupac1_coeffs_noexp)
 
@@ -144,21 +152,21 @@ tupac1_coeffs_noexp = remove_expression_coefficients(tupac1_coeffs_noexp)
 
 face1 = get_image(alex1_coeffs)
 face2 = get_image(alex2_coeffs)
-face3 = get_image(mathis1_coeffs)
+face3 = get_image(alexSmile_coeffs)
 face4 = get_image(obama1_coeffs)
 face5 = get_image(tupac1_coeffs)
 faces = np.hstack((face1, face2, face3, face4, face5))
 
 face1n = get_image(alex1_coeffs_norm)
 face2n = get_image(alex2_coeffs_norm)
-face3n = get_image(mathis1_coeffs_norm)
+face3n = get_image(alexSmile_coeffs_norm)
 face4n = get_image(obama1_coeffs_norm)
 face5n = get_image(tupac1_coeffs_norm)
 facesN = np.hstack((face1n, face2n, face3n, face4n, face5n))
 
 face1ne = get_image(alex1_coeffs_noexp)
 face2ne = get_image(alex2_coeffs_noexp)
-face3ne = get_image(mathis1_coeffs_noexp)
+face3ne = get_image(alexSmile_coeffs_noexp)
 face4ne = get_image(obama1_coeffs_noexp)
 face5ne = get_image(tupac1_coeffs_noexp)
 facesNE = np.hstack((face1ne, face2ne, face3ne, face4ne, face5ne))

@@ -16,22 +16,28 @@ class CoefficientBasedCompare3D:
         # Loop all open testing entries, get 3d coeffs and save comparison result to testing results
         print('comparing ' + str(len(context.open_testing_entry.items())) + ' image pairs')
         for id, testing_entry in context.open_testing_entry.items():
-            gallery_image_coeffs = context.deep_3d_coeffs[
-                testing_entry.gallery_image_file_name.split('.')[0]
-            ]
-            input_image_coeffs = context.deep_3d_coeffs[
-                testing_entry.input_image_file_name.split('.')[0]
-            ]
-            gallery_image_vector = np.concatenate([
-                gallery_image_coeffs['id'].cpu().numpy()[0],
-                gallery_image_coeffs['tex'].cpu().numpy()[0]
-            ])
-            input_image_vector = np.concatenate([
-                input_image_coeffs['id'].cpu().numpy()[0],
-                input_image_coeffs['tex'].cpu().numpy()[0]
-            ])
+            cosine_similarity = 0
+            try:
+                gallery_image_coeffs = context.deep_3d_coeffs[
+                    testing_entry.gallery_image_file_name.split('.')[0]
+                ]
+                input_image_coeffs = context.deep_3d_coeffs[
+                    testing_entry.input_image_file_name.split('.')[0]
+                ]
 
-            cosine_similarity = self.cosine_similarity(gallery_image_vector, input_image_vector)
+                gallery_image_vector = np.concatenate([
+                    gallery_image_coeffs['id'].cpu().numpy()[0],
+                    gallery_image_coeffs['tex'].cpu().numpy()[0]
+                ])
+                input_image_vector = np.concatenate([
+                    input_image_coeffs['id'].cpu().numpy()[0],
+                    input_image_coeffs['tex'].cpu().numpy()[0]
+                ])
+                cosine_similarity = self.cosine_similarity(gallery_image_vector, input_image_vector)
+
+            except Exception as error:
+                cprint('Failed comparing 3D Face coefficients on ' + str(id), 'red')
+
             context.testing_result_entries.append(TestingResultEntry(
                 open_testing_entry_id=id,
                 method=ComparisonMethods.COEFFICIENT_BASED_3D,

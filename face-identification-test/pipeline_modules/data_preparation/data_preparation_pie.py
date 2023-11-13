@@ -2,6 +2,7 @@ import shutil
 import os
 from random import choice
 from termcolor import cprint
+import pandas as pd
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
@@ -16,14 +17,18 @@ class DataPreparationPIE:
         self._pie_dataset_dir = pie_dataset_dir
         self._entry_count_limit = entry_count_limit
         self._frontal_camera = '051'
-        # TODO use all
-        #self._side_angles = [10, 41, 50, 80, 90, 110, 120, 130, 140, 190, 200, 240]
         self._side_cameras = {
+            '010': 75,
+            '200': 60,
+            '190': 45,
             '041': 30,
             '050': 15,
-            '080': -45,
+            '051': 0,
+            '140': -15,
             '130': -30,
-            '090': -60
+            '080': -45,
+            '090': -60,
+            '120': -75
         }
 
 
@@ -48,7 +53,7 @@ class DataPreparationPIE:
             # Loop trough other angles and add test entry with (same) frontal image as gallery image
             for camera, angle in self._side_cameras.items():
                 self.copy_image_to_working_dir(context, face, camera, str(input_faces_count) + '_i.png')
-                self.add_open_testing_entry(context, entry_counter, input_faces_count, True, angle)
+                self.add_open_testing_entry(context, input_faces_count, entry_counter, input_faces_count, True, angle)
                 input_faces_count += 1
 
             entry_counter += 1
@@ -61,8 +66,8 @@ class DataPreparationPIE:
             # No Files are copied here, since all required image have been moved in the previous for loop
             for camera, angle in self._side_cameras.items():
                 # Get Random mismatch
-                mismatch_entry_key = self.get_random_mismatch_entry_key(context, mismatch_counter)
-                self.add_open_testing_entry(context, mismatch_counter, mismatch_entry_key, False, angle)
+                mismatch_entry_key = self.get_random_mismatch_entry_key(context, mismatch_counter, angle)
+                self.add_open_testing_entry(context, input_faces_count, mismatch_counter, mismatch_entry_key, False, angle)
                 input_faces_count += 1
             mismatch_counter += 1
             if mismatch_counter >= self._entry_count_limit:
@@ -70,6 +75,11 @@ class DataPreparationPIE:
 
         print('successfully moved ' + str(entry_counter) + ' images to working dir and prepared testing entry')
         cprint('DataPreparationPIE: done', 'green')
+
+        #pf = pd.DataFrame(context.open_testing_entry)
+        #for (i, v) in context.open_testing_entry.items():
+        #    print(i)
+        #    print(v)
 
         next_step(context)
 
@@ -88,8 +98,8 @@ class DataPreparationPIE:
                 + face + '_01_01_' + camera + '_10_crop_128.png'
 
 
-    def add_open_testing_entry(self, context, gallery_image_id, input_image_id, is_actual_match, rotation_angle):
-        context.open_testing_entry[input_image_id] = OpenTestingEntry(
+    def add_open_testing_entry(self, context, open_testing_entry_id, gallery_image_id, input_image_id, is_actual_match, rotation_angle):
+        context.open_testing_entry[open_testing_entry_id] = OpenTestingEntry(
             gallery_image_file_name=str(gallery_image_id) + '_g.png',
             input_image_file_name=str(input_image_id) + '_i.png',
             is_actual_match=(1 if is_actual_match else 0),
@@ -97,9 +107,14 @@ class DataPreparationPIE:
         )
 
 
-    def get_random_mismatch_entry_key(self, context, excluded_gallery_image_id: int):
-        random_item_key = choice(list(context.open_testing_entry))
+    def get_random_mismatch_entry_key(self, context, excluded_gallery_image_id: int, angle: int):
+        # todo optimize this filter performance
+        filtered_testing_entries = {
+            k: v for k, v in context.open_testing_entry.items()
+            if v.is_actual_match == 1 and v.rotation_angle == angle
+        }
+        random_item_key = choice(list(filtered_testing_entries))
         if context.open_testing_entry[random_item_key].gallery_image_file_name == str(excluded_gallery_image_id) + '_g.png':
-            return self.get_random_mismatch_entry_key(context, excluded_gallery_image_id)
+            return self.get_random_mismatch_entry_key(context, excluded_gallery_image_id, angle)
         else:
             return random_item_key
