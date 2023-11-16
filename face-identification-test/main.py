@@ -7,6 +7,7 @@ from pipeline_modules.data_preparation.data_preparation_3d import DataPreparatio
 from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparationLFW
 from pipeline_modules.data_preparation.data_preparation_pie import DataPreparationPIE
 from pipeline_modules.image_analysis.deep_3d_coefficient_generator import Deep3DCoefficientGenerator
+from pipeline_modules.image_analysis.vpn_image_creator import VPNImageCreator
 from pipeline_modules.image_analysis.face_recon_2d_encoder import FaceRecon2DEncoder
 from pipeline_modules.face_comparison.coefficient_based_compare_3d import CoefficientBasedCompare3D
 from pipeline_modules.face_comparison.face_recognition_compare_2d import FaceRecognitionCompare2D
@@ -41,8 +42,8 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
     raise ValueError(error) from error
 
 
-lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 100)
-pie_prep_module = DataPreparationPIE('multi-pie', 150)
+lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 3)
+pie_prep_module = DataPreparationPIE('multi-pie', 3)
 
 # TODO get path from global
 pipeline_part_analysis = Pipeline[Context](
@@ -53,6 +54,9 @@ pipeline_part_analysis = Pipeline[Context](
 
     # 3D Analysis
     Deep3DCoefficientGenerator(),
+
+    # Generate Viewpoint Normalized Images
+    VPNImageCreator('avg_person.png', 'vpn_images'),
 
     # 2D Analysis
     FaceRecon2DEncoder(),
@@ -92,7 +96,7 @@ pipeline_visualization_pie = Pipeline[Context](
 )
 
 
-#pipeline_part_analysis(ctx_part_analyzer, error_handler)
+pipeline_part_analysis(ctx_part_analyzer, error_handler)
 
 #pipeline_visualization_lfw(ctx_lfw_visualization, error_handler)
-pipeline_visualization_pie(ctx_pie_visualization, error_handler)
+#pipeline_visualization_pie(ctx_pie_visualization, error_handler)

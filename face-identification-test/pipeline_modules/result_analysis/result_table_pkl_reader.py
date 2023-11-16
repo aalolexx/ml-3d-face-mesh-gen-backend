@@ -3,7 +3,6 @@ import pandas as pd
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
-from pipeline_util.data_util import get_panda_df_from_context
 
 
 class ResultTablePKLReader:
