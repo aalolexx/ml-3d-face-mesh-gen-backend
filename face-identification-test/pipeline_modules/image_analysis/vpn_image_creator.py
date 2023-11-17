@@ -52,9 +52,9 @@ class VPNImageCreator:
                     cv2.imwrite(vpn_gallery_image_full_path, vpn_gallery_image)
 
             except Exception as error:
-                raise ValueError from(error)
-                # TODO error handling
-                break
+                # TODO this error happens at name splitting. check why there are names without a dot
+                cprint('Error creating vpn image for ' + str(id) + ', error: ' + str(error))
+                continue
 
         cprint('VPNImageCreator: done', 'green')
         next_step(context)

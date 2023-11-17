@@ -44,16 +44,16 @@ class RotationBasedBarPlotter:
         sns.set_context('paper')
         fig, ax = plt.subplots()
         ax.set_ylim(0.4, 1)
-        sns.barplot(x='rotation', y='accuracy', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue'])
+        sns.barplot(x='rotation', y='accuracy', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue', 'mediumorchid'])
         sns.move_legend(ax, "lower right")
         plt.show()
 
         #fig, ax = plt.subplots()
         #ax.set_ylim(0.2, 1)
-        sns.barplot(x='rotation', y='precision', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue'])
+        sns.barplot(x='rotation', y='precision', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue', 'mediumorchid'])
         plt.show()
 
-        sns.barplot(x='rotation', y='count', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue'])
+        sns.barplot(x='rotation', y='count', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue', 'mediumorchid'])
         plt.show()
 
         cprint('RotationBasedBarPlotter: done', 'green')

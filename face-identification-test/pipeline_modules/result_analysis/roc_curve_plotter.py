@@ -24,11 +24,14 @@ class RocCurvePlotter:
 
         pf_1 = pf[(pf.method == ComparisonMethods.COEFFICIENT_BASED_3D)]
         pf_2 = pf[(pf.method == ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D)]
+        pf_3 = pf[(pf.method == ComparisonMethods.BIDIRECTIONAL_VPN_COMPARE)]
 
         fpr_1, tpr_1, thresholds_1 = roc_curve(pf_1['is_actual_match'], pf_1['prediction'])
         fpr_2, tpr_2, thresholds_2 = roc_curve(pf_2['is_actual_match'], pf_2['prediction'])
+        fpr_3, tpr_3, thresholds_3 = roc_curve(pf_3['is_actual_match'], pf_3['prediction'])
         roc_auc_1 = roc_auc_score(pf_1['is_actual_match'], pf_1['prediction'])
         roc_auc_2 = roc_auc_score(pf_2['is_actual_match'], pf_2['prediction'])
+        roc_auc_3 = roc_auc_score(pf_3['is_actual_match'], pf_3['prediction'])
 
         # Plot the ROC curve
 
@@ -41,6 +44,7 @@ class RocCurvePlotter:
         plt.title('ROC Curve')
         sns.lineplot(x=fpr_1, y=tpr_1, label='ROC CB_3D (AUC = {:.2f})'.format(roc_auc_1), color='seagreen')
         sns.lineplot(x=fpr_2, y=tpr_2, label='ROC CB_2D (AUC = {:.2f})'.format(roc_auc_2), color='royalblue')
+        sns.lineplot(x=fpr_3, y=tpr_3, label='ROC VPN (AUC = {:.2f})'.format(roc_auc_3), color='mediumorchid')
         plt.show()
 
         cprint('RocCurvePlotter: done', 'green')

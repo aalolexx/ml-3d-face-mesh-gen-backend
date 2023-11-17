@@ -11,6 +11,7 @@ from pipeline_modules.image_analysis.vpn_image_creator import VPNImageCreator
 from pipeline_modules.image_analysis.face_recon_2d_encoder import FaceRecon2DEncoder
 from pipeline_modules.face_comparison.coefficient_based_compare_3d import CoefficientBasedCompare3D
 from pipeline_modules.face_comparison.face_recognition_compare_2d import FaceRecognitionCompare2D
+from pipeline_modules.face_comparison.vpn_image_compare import VPNImageCompare
 from pipeline_modules.result_analysis.roc_curve_plotter import RocCurvePlotter
 from pipeline_modules.result_analysis.rotation_based_bar_plotter import RotationBasedBarPlotter
 from pipeline_modules.result_analysis.confusion_matrix_plotter import ConfusionMatrixPlotter
@@ -42,8 +43,8 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
     raise ValueError(error) from error
 
 
-lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 3)
-pie_prep_module = DataPreparationPIE('multi-pie', 3)
+lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 20)
+pie_prep_module = DataPreparationPIE('multi-pie', 80)
 
 # TODO get path from global
 pipeline_part_analysis = Pipeline[Context](
@@ -59,15 +60,12 @@ pipeline_part_analysis = Pipeline[Context](
     VPNImageCreator('avg_person.png', 'vpn_images'),
 
     # 2D Analysis
-    FaceRecon2DEncoder(),
+    FaceRecon2DEncoder(True, 'vpn_images'),
 
     # Face Comparison Methods
     CoefficientBasedCompare3D(),
-    # TODO 3D- Viewport Normalization Based
-    # TODO 3D- 3D Shape and Texture
-    # TODO 2D- MMOD Comparison <-- PRIO 1
-    FaceRecognitionCompare2D(),  # TODO - note: MMOD and Hog is for detection only.
-    # TODO 2D- HoG Comparison
+    VPNImageCompare(),
+    FaceRecognitionCompare2D(),
 
     # Save Results
     ResultTablePKLSaver('comparison_results_pie.pkl')
@@ -96,7 +94,7 @@ pipeline_visualization_pie = Pipeline[Context](
 )
 
 
-pipeline_part_analysis(ctx_part_analyzer, error_handler)
+#pipeline_part_analysis(ctx_part_analyzer, error_handler)
 
 #pipeline_visualization_lfw(ctx_lfw_visualization, error_handler)
-#pipeline_visualization_pie(ctx_pie_visualization, error_handler)
+pipeline_visualization_pie(ctx_pie_visualization, error_handler)
