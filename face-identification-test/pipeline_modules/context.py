@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Dict, List
-from pipeline_util.enums import ComparisonMethods
+from pipeline_util.enums import ComparisonMethod
 
 @dataclass
 class TestingResultEntry:
     open_testing_entry_id: int
-    method: ComparisonMethods
+    method: str  # Pandas and pkl cant seem to not be able to serialize an enum. so save key here
     prediction: float
 
 

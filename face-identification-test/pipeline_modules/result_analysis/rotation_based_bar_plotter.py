@@ -1,5 +1,5 @@
 from termcolor import cprint
-from sklearn.metrics import accuracy_score, precision_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -25,35 +25,48 @@ class RotationBasedBarPlotter:
 
         for rotation_angle, group in rotation_method_grouped_pf:
             for method in ComparisonMethods:
-                method_results = group[(group.method == method)]
+                method_results = group[(group.method == method.name)]
                 precision = precision_score(method_results['is_actual_match'], method_results['decision'])
+                recall = recall_score(method_results['is_actual_match'], method_results['decision'])
                 accuracy = accuracy_score(method_results['is_actual_match'], method_results['decision'])
                 result_analysis.append({
-                    'method': str(method),
+                    'method': method.title,
                     'rotation': rotation_angle,
                     'accuracy': accuracy,
                     'precision': precision,
+                    'recall': recall,
                     'count': method_results['open_testing_entry_id'].count()
 
                 })
-                #print(str(rotation_angle) + ", " + str(method) + " -> " + str(accuracy) + " | " + str(precision))
 
         seaborn_data = pd.DataFrame(result_analysis)
 
         sns.set_theme()
         sns.set_context('paper')
+        method_palette = [m.color for m in ComparisonMethods]
+
+        # Accuracy
         fig, ax = plt.subplots()
         ax.set_ylim(0.4, 1)
-        sns.barplot(x='rotation', y='accuracy', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue', 'mediumorchid'])
+        sns.barplot(x='rotation', y='accuracy', hue='method', data=seaborn_data, palette=method_palette)
         sns.move_legend(ax, "lower right")
         plt.show()
 
-        #fig, ax = plt.subplots()
-        #ax.set_ylim(0.2, 1)
-        sns.barplot(x='rotation', y='precision', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue', 'mediumorchid'])
+        # Precision
+        fig, ax = plt.subplots()
+        ax.set_ylim(0.4, 1)
+        sns.barplot(x='rotation', y='precision', hue='method', data=seaborn_data, palette=method_palette)
+        sns.move_legend(ax, "lower right")
         plt.show()
 
-        sns.barplot(x='rotation', y='count', hue='method', data=seaborn_data, palette=['seagreen', 'royalblue', 'mediumorchid'])
+        # Recall
+        fig, ax = plt.subplots()
+        ax.set_ylim(0.4, 1)
+        sns.barplot(x='rotation', y='recall', hue='method', data=seaborn_data, palette=method_palette)
+        sns.move_legend(ax, "lower right")
+        plt.show()
+
+        sns.barplot(x='rotation', y='count', hue='method', data=seaborn_data, palette=method_palette)
         plt.show()
 
         cprint('RotationBasedBarPlotter: done', 'green')

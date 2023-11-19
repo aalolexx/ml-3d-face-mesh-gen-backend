@@ -15,7 +15,12 @@ class DecisionMaker:
         pf = context.panda_dataframe
 
         for method in ComparisonMethods:
-            method_result_entries = pf[(pf.method == method)]
+            method_result_entries = pf[(pf.method == method.name)]
+
+            if method_result_entries.shape[0] <= 0:
+                cprint('No Testing entries with method: ' + str(method.name), 'red')
+                continue
+
             # Get the optimal threshold using Youden J Method and ROC Curve
             fpr, tpr, thresholds = roc_curve(
                 method_result_entries['is_actual_match'],
@@ -23,7 +28,7 @@ class DecisionMaker:
             )
             youden_j = tpr - fpr
             optimal_threshold = thresholds[np.argmax(youden_j)]
-            pf.loc[(pf.method == method), 'decision'] = np.where(
+            pf.loc[(pf.method == method.name), 'decision'] = np.where(
                 method_result_entries['prediction'] > optimal_threshold,
                 1,
                 0

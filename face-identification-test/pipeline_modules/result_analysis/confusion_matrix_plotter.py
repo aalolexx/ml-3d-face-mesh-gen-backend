@@ -24,12 +24,10 @@ class ConfusionMatrixPlotter:
 
         pf["is_actual_match"] = pf["is_actual_match"].astype(int)
 
-        pf_1 = pf[(pf.method == ComparisonMethods.COEFFICIENT_BASED_3D)]
-        pf_2 = pf[(pf.method == ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D)]
+        # TODO dynamic subplotting according to enum
 
-        #pd.set_option('display.max_columns', None)
-        #print(pf_1.head())
-        #print(pf_2.head())
+        pf_1 = pf[(pf.method == ComparisonMethods.COEFFICIENT_BASED_3D.name)]
+        pf_2 = pf[(pf.method == ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D.name)]
 
         confusion_1 = confusion_matrix(pf_1['is_actual_match'], pf_1['decision'])
         confusion_2 = confusion_matrix(pf_2['is_actual_match'], pf_2['decision'])

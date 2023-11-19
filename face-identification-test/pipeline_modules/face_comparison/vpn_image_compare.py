@@ -40,7 +40,7 @@ class VPNImageCompare:
 
             context.testing_result_entries.append(TestingResultEntry(
                 open_testing_entry_id=id,
-                method=ComparisonMethods.BIDIRECTIONAL_VPN_COMPARE,
+                method=ComparisonMethods.BIDIRECTIONAL_VPN_COMPARE.name,
                 prediction=faces_distance
             ))
 

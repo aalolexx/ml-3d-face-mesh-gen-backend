@@ -40,7 +40,7 @@ class CoefficientBasedCompare3D:
 
             context.testing_result_entries.append(TestingResultEntry(
                 open_testing_entry_id=id,
-                method=ComparisonMethods.COEFFICIENT_BASED_3D,
+                method=ComparisonMethods.COEFFICIENT_BASED_3D.name,
                 prediction=cosine_similarity
             ))
 

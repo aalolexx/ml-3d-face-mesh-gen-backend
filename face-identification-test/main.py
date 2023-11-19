@@ -11,6 +11,7 @@ from pipeline_modules.image_analysis.vpn_image_creator import VPNImageCreator
 from pipeline_modules.image_analysis.face_recon_2d_encoder import FaceRecon2DEncoder
 from pipeline_modules.face_comparison.coefficient_based_compare_3d import CoefficientBasedCompare3D
 from pipeline_modules.face_comparison.face_recognition_compare_2d import FaceRecognitionCompare2D
+from pipeline_modules.face_comparison.deep_face_compare_2d import DeepFaceCompare2D
 from pipeline_modules.face_comparison.vpn_image_compare import VPNImageCompare
 from pipeline_modules.result_analysis.roc_curve_plotter import RocCurvePlotter
 from pipeline_modules.result_analysis.rotation_based_bar_plotter import RotationBasedBarPlotter
@@ -34,6 +35,7 @@ def get_new_context():
         panda_dataframe=None
     )
 
+
 ctx_part_analyzer = get_new_context()
 
 
@@ -43,8 +45,8 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
     raise ValueError(error) from error
 
 
-lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 20)
-pie_prep_module = DataPreparationPIE('multi-pie', 80)
+lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 10)
+pie_prep_module = DataPreparationPIE('multi-pie', 15)
 
 # TODO get path from global
 pipeline_part_analysis = Pipeline[Context](
@@ -66,6 +68,7 @@ pipeline_part_analysis = Pipeline[Context](
     CoefficientBasedCompare3D(),
     VPNImageCompare(),
     FaceRecognitionCompare2D(),
+    DeepFaceCompare2D(),
 
     # Save Results
     ResultTablePKLSaver('comparison_results_pie.pkl')

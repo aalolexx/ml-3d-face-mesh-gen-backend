@@ -33,7 +33,7 @@ class FaceRecognitionCompare2D:
 
             context.testing_result_entries.append(TestingResultEntry(
                 open_testing_entry_id=id,
-                method=ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D,
+                method=ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D.name,
                 prediction=faces_distance
             ))
 
