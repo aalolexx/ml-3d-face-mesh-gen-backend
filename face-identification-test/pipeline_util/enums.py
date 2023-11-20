@@ -22,25 +22,35 @@ class ComparisonMethods(Enum):
 
     @property
     def color(self):
-        return self.value.color
+        return self.value.color  # used for plotting
 
     FACE_RECOGNITION_DISTANCE_2D = ComparisonMethod(
         'face_recognition_distance_2d',
         'face_recognition 2D',
-        'indigo'
+        '#e261c7'
     )
     DEEPFACE_DISTANCE_2D = ComparisonMethod(
         'deepface_distance_2d',
         'DeepFace 2D',
-        'slateblue'
+        '#b2298b'
     )
     COEFFICIENT_BASED_3D = ComparisonMethod(
         'coefficient_based_3d',
         'coeff distance 3DMM',
-        'seagreen'
+        '#88c7fe'
     )
     BIDIRECTIONAL_VPN_COMPARE = ComparisonMethod(
         'bidirectional_vpn_compare',
-        'VPN Image Compare (bi)',
-        'mediumaquamarine'
+        'VPN Image Compare (bi) w face_recognition',
+        '#4094e1'
     )
+    UNIDIRECTIONAL_VPN_COMPARE = ComparisonMethod(
+        'unidirectional_vpn_compare',
+        'VPN Image Compare (uni) w face_recognition',
+        '#1161b5'
+    )
+
+
+class ComparisonFramework(Enum):
+    FACE_RECOGNITION = 'face_recognition'
+    DEEPFACE = 'deepface'

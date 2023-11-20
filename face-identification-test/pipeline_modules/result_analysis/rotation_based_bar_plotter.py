@@ -17,8 +17,6 @@ class RotationBasedBarPlotter:
 
         pf = context.panda_dataframe
 
-        print(pf.columns.tolist())
-
         rotation_method_grouped_pf = pf.groupby(['rotation_angle'])
 
         result_analysis = []
@@ -26,6 +24,8 @@ class RotationBasedBarPlotter:
         for rotation_angle, group in rotation_method_grouped_pf:
             for method in ComparisonMethods:
                 method_results = group[(group.method == method.name)]
+                if method_results.shape[0] <= 0:
+                    continue
                 precision = precision_score(method_results['is_actual_match'], method_results['decision'])
                 recall = recall_score(method_results['is_actual_match'], method_results['decision'])
                 accuracy = accuracy_score(method_results['is_actual_match'], method_results['decision'])
@@ -50,6 +50,7 @@ class RotationBasedBarPlotter:
         ax.set_ylim(0.4, 1)
         sns.barplot(x='rotation', y='accuracy', hue='method', data=seaborn_data, palette=method_palette)
         sns.move_legend(ax, "lower right")
+        plt.title('Accuracy')
         plt.show()
 
         # Precision
@@ -57,6 +58,7 @@ class RotationBasedBarPlotter:
         ax.set_ylim(0.4, 1)
         sns.barplot(x='rotation', y='precision', hue='method', data=seaborn_data, palette=method_palette)
         sns.move_legend(ax, "lower right")
+        plt.title('Precision')
         plt.show()
 
         # Recall
@@ -64,6 +66,7 @@ class RotationBasedBarPlotter:
         ax.set_ylim(0.4, 1)
         sns.barplot(x='rotation', y='recall', hue='method', data=seaborn_data, palette=method_palette)
         sns.move_legend(ax, "lower right")
+        plt.title('Recall')
         plt.show()
 
         sns.barplot(x='rotation', y='count', hue='method', data=seaborn_data, palette=method_palette)

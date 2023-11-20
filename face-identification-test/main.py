@@ -19,6 +19,7 @@ from pipeline_modules.result_analysis.confusion_matrix_plotter import ConfusionM
 from pipeline_modules.result_analysis.result_table_pkl_reader import ResultTablePKLReader
 from pipeline_modules.result_analysis.result_table_pkl_saver import ResultTablePKLSaver
 from pipeline_modules.result_analysis.decision_maker import DecisionMaker
+from pipeline_util.enums import ComparisonFramework
 
 # Set up Context
 
@@ -46,7 +47,7 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
 
 
 lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 10)
-pie_prep_module = DataPreparationPIE('multi-pie', 15)
+pie_prep_module = DataPreparationPIE('multi-pie', 30)
 
 # TODO get path from global
 pipeline_part_analysis = Pipeline[Context](
@@ -59,14 +60,15 @@ pipeline_part_analysis = Pipeline[Context](
     Deep3DCoefficientGenerator(),
 
     # Generate Viewpoint Normalized Images
-    VPNImageCreator('avg_person.png', 'vpn_images'),
+    VPNImageCreator('avg_person.png'),
 
     # 2D Analysis
-    FaceRecon2DEncoder(True, 'vpn_images'),
+    FaceRecon2DEncoder(include_vpn_images=True),
 
     # Face Comparison Methods
     CoefficientBasedCompare3D(),
-    VPNImageCompare(),
+    VPNImageCompare(bidirectional=True, comparison_framework=ComparisonFramework.FACE_RECOGNITION),
+    VPNImageCompare(bidirectional=False, comparison_framework=ComparisonFramework.FACE_RECOGNITION),
     FaceRecognitionCompare2D(),
     DeepFaceCompare2D(),
 

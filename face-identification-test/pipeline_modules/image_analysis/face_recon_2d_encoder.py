@@ -7,9 +7,8 @@ from pipeline.pipeline import NextStep
 
 class FaceRecon2DEncoder:
     """Runs the 2D face_recon network and saves the encodings to context var"""
-    def __init__(self, include_vpn_images: bool, vpn_images_subdir: str) -> None:
+    def __init__(self, include_vpn_images: bool) -> None:
         self._include_vpn_images = include_vpn_images
-        self._vpn_images_subdir = vpn_images_subdir
 
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
@@ -40,7 +39,7 @@ class FaceRecon2DEncoder:
         if self._include_vpn_images:
             for id, testing_entry in context.open_testing_entry.items():
                 try:
-                    vpn_path_prefix = context.working_dir_path + '/' + self._vpn_images_subdir + '/vpn_'
+                    vpn_path_prefix = context.working_dir_path + '/vpn_'
                     gallery_vpn_image_path = vpn_path_prefix + testing_entry.gallery_image_file_name
                     input_vpn_image_path = vpn_path_prefix + testing_entry.input_image_file_name
                     gallery_vpn_image = face_recognition.load_image_file(gallery_vpn_image_path)

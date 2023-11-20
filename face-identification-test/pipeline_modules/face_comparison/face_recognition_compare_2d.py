@@ -15,7 +15,7 @@ class FaceRecognitionCompare2D:
         # Loop all open testing entries, get 2d encodings and save comparison result to testing results
         print('comparing ' + str(len(context.open_testing_entry.items())) + ' image pairs')
         for id, testing_entry in context.open_testing_entry.items():
-            faces_distance = 0
+            prediction = 0
             try:
                 gallery_image_encoding = context.face_recognition_2d_encodings[
                     testing_entry.gallery_image_file_name.split('.')[0]
@@ -25,7 +25,7 @@ class FaceRecognitionCompare2D:
                 ]
                 if gallery_image_encoding is not None and input_image_encoding is not None:
                     faces_distance = face_recognition.face_distance([gallery_image_encoding], input_image_encoding)[0]
-                    faces_distance = 1 - faces_distance  # remap the value to have a unified 0 - 1 prediction
+                    prediction = 1 - faces_distance  # remap the value to have a unified 0 - 1 prediction
                 else:
                     cprint('could not 2D face_recognition compare testing entry with id ' + str(id), 'red')
             except Exception as error:
@@ -34,7 +34,7 @@ class FaceRecognitionCompare2D:
             context.testing_result_entries.append(TestingResultEntry(
                 open_testing_entry_id=id,
                 method=ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D.name,
-                prediction=faces_distance
+                prediction=prediction
             ))
 
         cprint('FaceRecognitionCompare2D: done', 'green')

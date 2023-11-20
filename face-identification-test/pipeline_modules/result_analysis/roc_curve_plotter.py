@@ -44,11 +44,11 @@ class RocCurvePlotter:
         # Plot the ROC curve
         sns.set_theme()
         sns.set_context('paper')
-        sns.color_palette(['seagreen', 'royalblue', 'mediumorchid'])
         fig, ax = plt.subplots()
         plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')
         ax.set_xlabel('False Positive Rate')
         ax.set_ylabel('True Positive Rate')
+        ax.set_ylim(0, 1.01)
         plt.title('ROC Curve')
         for cur_method_roc in roc_data:
             sns.lineplot(x=cur_method_roc['fpr'],

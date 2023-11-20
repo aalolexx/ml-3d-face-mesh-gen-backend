@@ -17,18 +17,13 @@ from pipeline.pipeline import NextStep
 
 class VPNImageCreator:
     """Creates a Viewpoint Normalize Image (Frontal Face Image) Based of a 3DMM and a stadnard person image"""
-    def __init__(self, standard_person_subdir: str, vpn_images_subdir: str) -> None:
+    def __init__(self, standard_person_subdir: str) -> None:
         self._standard_person_subdir = standard_person_subdir
-        self._vpn_images_subdir = vpn_images_subdir
         self._detector = mtcnn.MTCNN()
 
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('VPNImageCreator: started', 'cyan')
-
-        vpn_images_dir = context.working_dir_path + '/' + self._vpn_images_subdir
-        if not os.path.exists(vpn_images_dir):
-            os.makedirs(vpn_images_dir)
 
         # TODO Create own average person image
         standard_person_image, standard_face_mtcnn = self.prepare_standard_face(context)
@@ -36,10 +31,9 @@ class VPNImageCreator:
         for id, testing_entry in context.open_testing_entry.items():
             try:
                 vpn_input_image_full_path = os.path.abspath(
-                    vpn_images_dir + '/vpn_' + testing_entry.input_image_file_name)
+                    context.working_dir_path + '/vpn_' + testing_entry.input_image_file_name)
                 vpn_gallery_image_full_path = os.path.abspath(
-                    vpn_images_dir + '/vpn_' + testing_entry.gallery_image_file_name)
-
+                    context.working_dir_path + '/vpn_' + testing_entry.gallery_image_file_name)
 
                 if not os.path.isfile(vpn_input_image_full_path):
                     input_image_3d_coeffs = context.deep_3d_coeffs[testing_entry.input_image_file_name.split('.')[0]]
