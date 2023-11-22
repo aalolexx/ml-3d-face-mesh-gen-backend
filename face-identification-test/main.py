@@ -53,7 +53,7 @@ pie_prep_module = DataPreparationPIE('multi-pie', 30)
 pipeline_part_analysis = Pipeline[Context](
     # Data Preparations
     # TODO for dataset data preparation -> define a switch before that and
-    pie_prep_module,
+    lfw_prep_module,
     DataPreparation3D('detections'),
 
     # 3D Analysis
@@ -70,10 +70,11 @@ pipeline_part_analysis = Pipeline[Context](
     VPNImageCompare(bidirectional=True, comparison_framework=ComparisonFramework.FACE_RECOGNITION),
     VPNImageCompare(bidirectional=False, comparison_framework=ComparisonFramework.FACE_RECOGNITION),
     FaceRecognitionCompare2D(),
-    DeepFaceCompare2D(),
+    DeepFaceCompare2D(model_name='VGG-Face'),
+    DeepFaceCompare2D(model_name='Facenet'),
 
     # Save Results
-    ResultTablePKLSaver('comparison_results_pie.pkl')
+    ResultTablePKLSaver('comparison_results_lfw.pkl')
 )
 
 ctx_lfw_visualization = get_new_context()
@@ -101,5 +102,5 @@ pipeline_visualization_pie = Pipeline[Context](
 
 #pipeline_part_analysis(ctx_part_analyzer, error_handler)
 
-#pipeline_visualization_lfw(ctx_lfw_visualization, error_handler)
-pipeline_visualization_pie(ctx_pie_visualization, error_handler)
+pipeline_visualization_lfw(ctx_lfw_visualization, error_handler)
+#pipeline_visualization_pie(ctx_pie_visualization, error_handler)

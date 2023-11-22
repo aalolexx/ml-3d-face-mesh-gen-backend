@@ -29,10 +29,15 @@ class ComparisonMethods(Enum):
         'face_recognition 2D',
         '#e261c7'
     )
-    DEEPFACE_DISTANCE_2D = ComparisonMethod(
-        'deepface_distance_2d',
-        'DeepFace 2D',
+    DEEPFACE_DISTANCE_2D_VGG = ComparisonMethod(
+        'deepface_distance_2d_vgg',
+        'DeepFace 2D w VGG-Face',
         '#b2298b'
+    )
+    DEEPFACE_DISTANCE_2D_FACENET = ComparisonMethod(
+        'deepface_distance_2d_facenet',
+        'DeepFace 2D w Facenet',
+        '#730053'
     )
     COEFFICIENT_BASED_3D = ComparisonMethod(
         'coefficient_based_3d',

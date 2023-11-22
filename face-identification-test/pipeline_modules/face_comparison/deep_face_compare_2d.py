@@ -8,6 +8,11 @@ from pipeline_util.enums import ComparisonMethods
 
 class DeepFaceCompare2D:
     """Compares two 2D Faces with deep face"""
+    def __init__(self, model_name: str) -> None:
+        if model_name != 'VGG-Face' and model_name != 'Facenet':
+            raise Exception('Only VGG-Face and Facenet Models are allowed for the deepface test')
+        self._model_name = model_name
+
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('DeepFaceCompare2D: started', 'cyan')
@@ -21,14 +26,19 @@ class DeepFaceCompare2D:
                 input_image_path = context.working_dir_path + '/' + testing_entry.input_image_file_name
                 result = DeepFace.verify(img1_path=gallery_image_path,
                                          img2_path=input_image_path,
-                                         detector_backend='mtcnn')
+                                         detector_backend='mtcnn',
+                                         model_name=self._model_name)
                 prediction = 1 - result['distance']
             except Exception as error:
                 cprint('Failed getting the 2D Face encodings on ' + str(id), 'red')
 
+            method_name = ComparisonMethods.DEEPFACE_DISTANCE_2D_VGG.name
+            if self._model_name == 'Facenet':
+                method_name = ComparisonMethods.DEEPFACE_DISTANCE_2D_FACENET.name
+
             context.testing_result_entries.append(TestingResultEntry(
                 open_testing_entry_id=id,
-                method=ComparisonMethods.DEEPFACE_DISTANCE_2D.name,
+                method=method_name,
                 prediction=prediction
             ))
 
