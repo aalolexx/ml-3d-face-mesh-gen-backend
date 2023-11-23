@@ -3,7 +3,7 @@ import pandas as pd
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
-from pipeline_util.data_util import get_panda_df_from_context
+from pipeline_util.data_util import *
 
 
 class ResultTablePKLSaver:
@@ -17,10 +17,16 @@ class ResultTablePKLSaver:
         cprint('------------------------------------', 'cyan')
         cprint('ResultTablePKLSaver: started', 'cyan')
 
-        file_path = context.output_dir_path + '/' + self._pkl_file_name
-        df = get_panda_df_from_context(context)
-        df.to_pickle(file_path)
-        print('saved result data to ' + file_path)
+        file_path_te = context.output_dir_path + '/' + self._pkl_file_name
+        df = panda_testing_entries_from_context(context)
+        df.to_pickle(file_path_te)
+        print('saved result data to ' + file_path_te)
+
+        file_path_failed_te = context.output_dir_path + '/failed_' + self._pkl_file_name
+        df = panda_failed_testing_entries_from_context(context)
+        df.to_pickle(file_path_failed_te)
+        print('saved fail data to ' + file_path_failed_te)
+
 
         cprint('ResultTablePKLSaver: done', 'green')
         next_step(context)

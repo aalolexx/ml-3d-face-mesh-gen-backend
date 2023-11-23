@@ -20,6 +20,13 @@ class OpenTestingEntry:
 
 
 @dataclass
+class FailedTestingEntry:
+    failed_method: str
+    open_testing_entry_id: int
+    fail_reason: str
+
+
+@dataclass
 class Context:
     input_dir_path: str
     output_dir_path: str
@@ -29,4 +36,6 @@ class Context:
     face_recognition_2d_encodings: dict
     open_testing_entry: Dict[int, OpenTestingEntry]
     testing_result_entries: List[TestingResultEntry]
-    panda_dataframe: any
+    failed_testing_entries: List[FailedTestingEntry]
+    panda_testing_entries: any
+    panda_failed_entries: any

@@ -12,7 +12,7 @@ class DecisionMaker:
         cprint('------------------------------------', 'cyan')
         cprint('DecisionMaker: started', 'cyan')
 
-        pf = context.panda_dataframe
+        pf = context.panda_testing_entries
 
         for method in ComparisonMethods:
             method_result_entries = pf[(pf.method == method.name)]

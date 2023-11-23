@@ -16,6 +16,7 @@ from pipeline_modules.face_comparison.vpn_image_compare import VPNImageCompare
 from pipeline_modules.result_analysis.roc_curve_plotter import RocCurvePlotter
 from pipeline_modules.result_analysis.rotation_based_bar_plotter import RotationBasedBarPlotter
 from pipeline_modules.result_analysis.confusion_matrix_plotter import ConfusionMatrixPlotter
+from pipeline_modules.result_analysis.failed_entries_bar_plotter import FailedEntriesBarPlotter
 from pipeline_modules.result_analysis.result_table_pkl_reader import ResultTablePKLReader
 from pipeline_modules.result_analysis.result_table_pkl_saver import ResultTablePKLSaver
 from pipeline_modules.result_analysis.decision_maker import DecisionMaker
@@ -33,7 +34,9 @@ def get_new_context():
         face_recognition_2d_encodings={},
         open_testing_entry={},
         testing_result_entries=[],
-        panda_dataframe=None
+        failed_testing_entries=[],
+        panda_testing_entries=None,
+        panda_failed_entries=None
     )
 
 
@@ -46,14 +49,14 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
     raise ValueError(error) from error
 
 
-lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 10)
-pie_prep_module = DataPreparationPIE('multi-pie', 30)
+lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 50)
+pie_prep_module = DataPreparationPIE('multi-pie', 20)
 
 # TODO get path from global
 pipeline_part_analysis = Pipeline[Context](
     # Data Preparations
     # TODO for dataset data preparation -> define a switch before that and
-    lfw_prep_module,
+    pie_prep_module,
     DataPreparation3D('detections'),
 
     # 3D Analysis
@@ -74,7 +77,7 @@ pipeline_part_analysis = Pipeline[Context](
     DeepFaceCompare2D(model_name='Facenet'),
 
     # Save Results
-    ResultTablePKLSaver('comparison_results_lfw.pkl')
+    ResultTablePKLSaver('comparison_results_pie.pkl')
 )
 
 ctx_lfw_visualization = get_new_context()
@@ -85,7 +88,8 @@ pipeline_visualization_lfw = Pipeline[Context](
     DecisionMaker(),
     # Result Plotting
     RocCurvePlotter(''),  # zb pf["rotation_angle"] == -60
-    ConfusionMatrixPlotter('')
+    ConfusionMatrixPlotter(''),
+    FailedEntriesBarPlotter()
 )
 
 ctx_pie_visualization = get_new_context()
@@ -96,11 +100,12 @@ pipeline_visualization_pie = Pipeline[Context](
     DecisionMaker(),
     # Result Plotting
     RocCurvePlotter(''),
-    RotationBasedBarPlotter()
+    RotationBasedBarPlotter(),
+    FailedEntriesBarPlotter()
 )
 
 
-#pipeline_part_analysis(ctx_part_analyzer, error_handler)
+pipeline_part_analysis(ctx_part_analyzer, error_handler)
 
-pipeline_visualization_lfw(ctx_lfw_visualization, error_handler)
-#pipeline_visualization_pie(ctx_pie_visualization, error_handler)
+#pipeline_visualization_lfw(ctx_lfw_visualization, error_handler)
+pipeline_visualization_pie(ctx_pie_visualization, error_handler)

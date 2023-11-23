@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import torch
 
-def get_panda_df_from_context(context):
+def panda_testing_entries_from_context(context):
     # TODO Error Handling
     df = pd.DataFrame(context.testing_result_entries)
     is_actual_match_column = []
@@ -15,8 +15,11 @@ def get_panda_df_from_context(context):
     df['is_actual_match'] = is_actual_match_column
     df['rotation_angle'] = rotation_angle_column
     df['decision'] = np.nan
+
     return df
 
+def panda_failed_testing_entries_from_context(context):
+    return pd.DataFrame(context.failed_testing_entries)
 
 #
 # Remap the deep3D Coeff dict to a 2D Array to be able to pass it to the model generator

@@ -9,7 +9,7 @@ from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
 
 class ConfusionMatrixPlotter:
-    """Plots the Confusion Matrix from the context.panda_dataframe table"""
+    """Plots the Confusion Matrix from the context.panda_testing_entries table"""
     def __init__(self, additional_data_filter: str) -> None:
         self._additional_data_filter = additional_data_filter
 
@@ -18,7 +18,7 @@ class ConfusionMatrixPlotter:
         cprint('------------------------------------', 'cyan')
         cprint('ConfusionMatrixPlotter: started', 'cyan')
 
-        pf = context.panda_dataframe
+        pf = context.panda_testing_entries
         if self._additional_data_filter:
             pf = pf[eval(self._additional_data_filter)]
 

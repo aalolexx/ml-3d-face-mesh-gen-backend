@@ -5,7 +5,7 @@ from enum import Enum
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
-from pipeline_modules.context import TestingResultEntry
+from pipeline_modules.context import TestingResultEntry, FailedTestingEntry
 from pipeline_util.enums import ComparisonMethods, ComparisonFramework
 
 
@@ -31,11 +31,16 @@ class VPNImageCompare:
         for id, testing_entry in context.open_testing_entry.items():
             try:
                 if self._comparison_framework == ComparisonFramework.FACE_RECOGNITION:
-                    prediction = self.face_recognition_compare(context, testing_entry)
+                    prediction = self.face_recognition_compare(context, testing_entry, id, required_method)
                 else:
                     prediction = self.deepface_compare(context, testing_entry)
             except Exception as error:
-                cprint('Failed getting the 2D Face encodings on ' + str(id), 'red')
+                cprint('Failed with VPN comparison on ' + str(id), 'red')
+                context.failed_testing_entries.append(FailedTestingEntry(
+                    required_method,
+                    id,
+                    'error'
+                ))
 
             context.testing_result_entries.append(TestingResultEntry(
                 open_testing_entry_id=id,
@@ -46,7 +51,7 @@ class VPNImageCompare:
         cprint('VPNImageCompare: done', 'green')
         next_step(context)
 
-    def face_recognition_compare(self, context, testing_entry):
+    def face_recognition_compare(self, context, testing_entry, id, required_method):
         prediction = 0
 
         input_vpn_image_encoding = context.face_recognition_2d_encodings[
@@ -69,6 +74,11 @@ class VPNImageCompare:
         else:
             cprint('could not 2D VPN (face_recognition) compare testing entry with '
                    + testing_entry.gallery_image_file_name + '/' + testing_entry.input_image_file_name, 'red')
+            context.failed_testing_entries.append(FailedTestingEntry(
+                required_method,
+                id,
+                'detection'
+            ))
 
         return prediction
 

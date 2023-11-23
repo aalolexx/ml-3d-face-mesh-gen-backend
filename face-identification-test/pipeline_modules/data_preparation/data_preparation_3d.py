@@ -4,9 +4,9 @@ import mtcnn
 
 from termcolor import cprint
 
-from pipeline_modules.context import Context
+from pipeline_modules.context import Context, FailedTestingEntry
 from pipeline.pipeline import NextStep
-from pipeline_util.file_util import remove_corrupt_image
+from pipeline_util.enums import ComparisonMethods
 
 
 class DataPreparation3D:
@@ -41,7 +41,7 @@ class DataPreparation3D:
 
             # The Face may be covered too much or the image is corrupt. in this case warn the user and delete the image
             if len(face_rects) <= 0:
-                remove_corrupt_image(context, full_image_path, file_name)
+                self.protocol_failed_entry(context, file_name)
             else:
                 face_rect = face_rects[0]  # TODO print a warning if more than 1 face on img
                 required_landmarks = self.get_required_landmarks(face_rect)
@@ -68,3 +68,13 @@ class DataPreparation3D:
         with open(detection_file_path, 'w') as file:
             for lm in landmarks:
                 file.write(str(lm[0]) + ' ' + str(lm[1]) + '\n')
+
+
+    def protocol_failed_entry(self, context, file_name):
+        cprint('failed to find a face rect for image: ' + file_name, 'red')
+        # Save Failed Testing Entries for all 3D Method since all of them depend on this landmark detection here
+        context.failed_testing_entries.append(FailedTestingEntry(
+            ComparisonMethods.COEFFICIENT_BASED_3D.name,
+            -1,
+            'detection'
+        ))

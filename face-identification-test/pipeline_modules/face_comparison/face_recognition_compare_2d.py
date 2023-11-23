@@ -3,7 +3,7 @@ import face_recognition
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
-from pipeline_modules.context import TestingResultEntry
+from pipeline_modules.context import TestingResultEntry, FailedTestingEntry
 from pipeline_util.enums import ComparisonMethods
 
 class FaceRecognitionCompare2D:
@@ -28,8 +28,18 @@ class FaceRecognitionCompare2D:
                     prediction = 1 - faces_distance  # remap the value to have a unified 0 - 1 prediction
                 else:
                     cprint('could not 2D face_recognition compare testing entry with id ' + str(id), 'red')
+                    context.failed_testing_entries.append(FailedTestingEntry(
+                        ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D.name,
+                        id,
+                        'detection'
+                    ))
             except Exception as error:
                 cprint('Failed getting the 2D Face encodings on ' + str(id), 'red')
+                context.failed_testing_entries.append(FailedTestingEntry(
+                    ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D.name,
+                    id,
+                    'error'
+                ))
 
             context.testing_result_entries.append(TestingResultEntry(
                 open_testing_entry_id=id,

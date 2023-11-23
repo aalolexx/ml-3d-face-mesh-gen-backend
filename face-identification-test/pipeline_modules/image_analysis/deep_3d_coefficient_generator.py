@@ -29,6 +29,7 @@ class Deep3DCoefficientGenerator:
             context.deep_3d_coeffs = get_coeffs_from_image(0, opt, opt.img_folder) # dict id -> file name
             cprint('Deep3DCoefficientGenerator: done', 'green')
             next_step(context)
+            # TODO find out if some failed and protocol it
         except Exception as error:
             cprint('Failed getting 3D Face coefficients', 'red')
             raise ValueError(error) from error

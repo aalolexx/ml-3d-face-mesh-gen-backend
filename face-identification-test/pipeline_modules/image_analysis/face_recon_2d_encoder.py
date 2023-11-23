@@ -1,8 +1,9 @@
 from termcolor import cprint
 import face_recognition
 
-from pipeline_modules.context import Context
+from pipeline_modules.context import Context, FailedTestingEntry
 from pipeline.pipeline import NextStep
+from pipeline_util.enums import ComparisonMethods
 
 
 class FaceRecon2DEncoder:
@@ -52,8 +53,8 @@ class FaceRecon2DEncoder:
                 input_vpn_image_encodings = face_recognition.face_encodings(input_vpn_image)
                 gallery_vpn_image_name = 'vpn_' + testing_entry.gallery_image_file_name.split('.')[0]
                 input_vpn_image_name = 'vpn_' + testing_entry.input_image_file_name.split('.')[0]
-                self.add_encoding_to_context(context, gallery_vpn_image_encodings, gallery_vpn_image_name)
-                self.add_encoding_to_context(context, input_vpn_image_encodings, input_vpn_image_name)
+                self.add_encoding_to_context(context, gallery_vpn_image_encodings, gallery_vpn_image_name, True)
+                self.add_encoding_to_context(context, input_vpn_image_encodings, input_vpn_image_name, True)
 
         # TODO protocol failed entries
 
@@ -61,7 +62,7 @@ class FaceRecon2DEncoder:
         next_step(context)
 
 
-    def add_encoding_to_context(self, context, image_encoding, image_name):
+    def add_encoding_to_context(self, context, image_encoding, image_name, is_vpn_image=False):
         if len(image_encoding) > 1:
             cprint('found more than 1 face in image at ' + image_name + '. Parsing face 0', 'yellow')
 

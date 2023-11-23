@@ -10,12 +10,12 @@ from pipeline_util.enums import ComparisonMethods
 
 class RotationBasedBarPlotter:
     """Plots a Bar chart showing the accuracies by rotation angles
-    from the context.panda_dataframe table"""
+    from the context.panda_testing_entries table"""
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('RotationBasedBarPlotter: started', 'cyan')
 
-        pf = context.panda_dataframe
+        pf = context.panda_testing_entries
 
         rotation_method_grouped_pf = pf.groupby(['rotation_angle'])
 
@@ -69,6 +69,7 @@ class RotationBasedBarPlotter:
         plt.title('Recall')
         plt.show()
 
+        # Count Entries
         sns.barplot(x='rotation', y='count', hue='method', data=seaborn_data, palette=method_palette)
         plt.show()
 

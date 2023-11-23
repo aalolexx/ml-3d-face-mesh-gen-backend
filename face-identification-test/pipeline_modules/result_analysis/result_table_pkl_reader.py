@@ -16,8 +16,11 @@ class ResultTablePKLReader:
         cprint('------------------------------------', 'cyan')
         cprint('ResultTablePKLReader: started', 'cyan')
 
-        df = pd.read_pickle(context.output_dir_path + '/' + self._pkl_file_name)
-        context.panda_dataframe = df
+        df_te = pd.read_pickle(context.output_dir_path + '/' + self._pkl_file_name)
+        context.panda_testing_entries = df_te
+
+        df_failed_te = pd.read_pickle(context.output_dir_path + '/failed_' + self._pkl_file_name)
+        context.panda_failed_entries = df_failed_te
 
         cprint('ResultTablePKLReader: done', 'green')
         next_step(context)
