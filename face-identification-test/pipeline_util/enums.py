@@ -59,3 +59,10 @@ class ComparisonMethods(Enum):
 class ComparisonFramework(Enum):
     FACE_RECOGNITION = 'face_recognition'
     DEEPFACE = 'deepface'
+
+
+# DATASET and max entries
+class Datasets(Enum):
+    YALE = 15
+    LFW = 500
+    MULTIPIE = 250
