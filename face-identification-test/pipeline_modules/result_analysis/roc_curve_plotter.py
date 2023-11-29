@@ -9,19 +9,14 @@ from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
 
 
+
 class RocCurvePlotter:
     """Plots the ROC Curve from the context.panda_testing_entries table"""
-    def __init__(self, additional_data_filter: str) -> None:
-        self._additional_data_filter = additional_data_filter
-
-
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('RocCurvePlotter: started', 'cyan')
 
         pf = context.panda_testing_entries
-        if self._additional_data_filter:
-            pf = pf[eval(self._additional_data_filter)]
 
         roc_data = []
 

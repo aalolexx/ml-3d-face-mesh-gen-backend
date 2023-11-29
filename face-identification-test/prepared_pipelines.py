@@ -3,7 +3,7 @@ from pipeline.pipeline import *
 from pipeline_modules.context import Context
 from pipeline_modules.data_preparation.data_preparation_3d import DataPreparation3D
 from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparationLFW
-from pipeline_modules.data_preparation.data_preparation_yale import DataPreparationYale
+from pipeline_modules.data_preparation.data_preparation_yale import DataPreparationYale, Scenarios
 from pipeline_modules.data_preparation.data_preparation_pie import DataPreparationPIE
 from pipeline_modules.image_analysis.deep_3d_coefficient_generator import Deep3DCoefficientGenerator
 from pipeline_modules.image_analysis.vpn_image_creator import VPNImageCreator
@@ -97,28 +97,51 @@ def get_pipeline_t2(pkl_suffix: str):
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(''),
+        RocCurvePlotter(),
         CategorizedBasedBarPlotter('rotation_angle'),
         FailedEntriesBarPlotter()
     )
 
 
 def get_pipeline_t3(pkl_suffix: str):
+    t3_data_query = 'scenario == "' + Scenarios.CENTERLIGHT.value + '" | '\
+                  + 'scenario == "' + Scenarios.LEFTLIGHT.value + '" | '\
+                  + 'scenario == "' + Scenarios.RIGHTLIGHT.value + '"'
+
     return Pipeline[Context](
         # Read Results from previous pipeline part
-        ResultTablePKLReader('comparison_results_' + pkl_suffix + '.pkl'),
+        ResultTablePKLReader(
+            pkl_file_name='comparison_results_' + pkl_suffix + '.pkl',
+            additional_data_query=t3_data_query),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(''),
+        RocCurvePlotter(),
         CategorizedBasedBarPlotter('scenario'),
         FailedEntriesBarPlotter()
     )
 
 
-def get_pipeline_t4():
-    # TODO
-    return None
+def get_pipeline_t4(pkl_suffix: str):
+    t4_data_query = 'scenario == "' + Scenarios.NORMAL.value + '" | ' \
+                    + 'scenario == "' + Scenarios.HAPPY.value + '" | ' \
+                    + 'scenario == "' + Scenarios.SAD.value + '" | ' \
+                    + 'scenario == "' + Scenarios.SLEEPY.value + '" | ' \
+                    + 'scenario == "' + Scenarios.SURPRISED.value + '" | ' \
+                    + 'scenario == "' + Scenarios.WINK.value + '"'
+
+    return Pipeline[Context](
+        # Read Results from previous pipeline part
+        ResultTablePKLReader(
+            pkl_file_name='comparison_results_' + pkl_suffix + '.pkl',
+            additional_data_query=t4_data_query),
+        # Make Decisions from the given predictions
+        DecisionMaker(),
+        # Result Plotting
+        RocCurvePlotter(),
+        CategorizedBasedBarPlotter('scenario'),
+        FailedEntriesBarPlotter()
+    )
 
 
 def get_pipeline_t5():
@@ -138,7 +161,7 @@ def get_pipeline_t7(pkl_suffix: str):
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(''),  # zb pf["rotation_angle"] == -60
+        RocCurvePlotter(),  # zb pf["rotation_angle"] == -60
         ConfusionMatrixPlotter(''),
         FailedEntriesBarPlotter()
     )
@@ -189,7 +212,9 @@ def run_t3():
 
 
 def run_t4():
-    # TODO
+    ctx = get_new_context()
+    pipeline_yale = get_pipeline_t4(Datasets.YALE.name)
+    pipeline_yale(ctx, error_handler)
     return
 
 
