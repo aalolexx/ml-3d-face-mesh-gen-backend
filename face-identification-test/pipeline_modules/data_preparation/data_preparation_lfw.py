@@ -85,5 +85,6 @@ class DataPreparationLFW:
             gallery_image_file_name=str(id) + '_g.jpg',
             input_image_file_name=str(id) + '_i.jpg',
             is_actual_match=(1 if is_actual_match else 0),
-            rotation_angle=0
+            rotation_angle=0,
+            scenario='uncontrolled'
         )

@@ -5,6 +5,7 @@ from pipeline.pipeline import *
 from pipeline_modules.context import Context
 from pipeline_modules.data_preparation.data_preparation_3d import DataPreparation3D
 from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparationLFW
+from pipeline_modules.data_preparation.data_preparation_yale import DataPreparationYale
 from pipeline_modules.data_preparation.data_preparation_pie import DataPreparationPIE
 from pipeline_modules.image_analysis.deep_3d_coefficient_generator import Deep3DCoefficientGenerator
 from pipeline_modules.image_analysis.vpn_image_creator import VPNImageCreator
@@ -14,7 +15,7 @@ from pipeline_modules.face_comparison.face_recognition_compare_2d import FaceRec
 from pipeline_modules.face_comparison.deep_face_compare_2d import DeepFaceCompare2D
 from pipeline_modules.face_comparison.vpn_image_compare import VPNImageCompare
 from pipeline_modules.result_analysis.roc_curve_plotter import RocCurvePlotter
-from pipeline_modules.result_analysis.rotation_based_bar_plotter import RotationBasedBarPlotter
+from pipeline_modules.result_analysis.categorized_based_bar_plotter import CategorizedBasedBarPlotter
 from pipeline_modules.result_analysis.confusion_matrix_plotter import ConfusionMatrixPlotter
 from pipeline_modules.result_analysis.failed_entries_bar_plotter import FailedEntriesBarPlotter
 from pipeline_modules.result_analysis.result_table_pkl_reader import ResultTablePKLReader
@@ -50,13 +51,14 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
 
 
 lfw_prep_module = DataPreparationLFW('lfw', 'matchpairsDevTest.csv', 'mismatchpairsDevTest.csv', 50)
-pie_prep_module = DataPreparationPIE('multi-pie', 20)
+pie_prep_module = DataPreparationPIE('multi-pie', 2)
+yale_prep_module = DataPreparationYale('yale-face-database', 10)
 
 # TODO get path from global
 pipeline_part_analysis = Pipeline[Context](
     # Data Preparations
     # TODO for dataset data preparation -> define a switch before that and
-    pie_prep_module,
+    yale_prep_module,
     DataPreparation3D('detections'),
 
     # 3D Analysis
@@ -77,7 +79,7 @@ pipeline_part_analysis = Pipeline[Context](
     DeepFaceCompare2D(model_name='Facenet'),
 
     # Save Results
-    ResultTablePKLSaver('comparison_results_pie.pkl')
+    ResultTablePKLSaver('comparison_results_yale.pkl')
 )
 
 ctx_lfw_visualization = get_new_context()
@@ -100,12 +102,25 @@ pipeline_visualization_pie = Pipeline[Context](
     DecisionMaker(),
     # Result Plotting
     RocCurvePlotter(''),
-    RotationBasedBarPlotter(),
+    CategorizedBasedBarPlotter('rotation_angle'),
+    FailedEntriesBarPlotter()
+)
+
+ctx_yale_visualization = get_new_context()
+pipeline_visualization_yale = Pipeline[Context](
+    # Read Results from previous pipeline part
+    ResultTablePKLReader('comparison_results_yale.pkl'),
+    # Make Decisions from the given predictions
+    DecisionMaker(),
+    # Result Plotting
+    RocCurvePlotter(''),
+    CategorizedBasedBarPlotter('scenario'),
     FailedEntriesBarPlotter()
 )
 
 
-pipeline_part_analysis(ctx_part_analyzer, error_handler)
+#pipeline_part_analysis(ctx_part_analyzer, error_handler)
 
 #pipeline_visualization_lfw(ctx_lfw_visualization, error_handler)
-pipeline_visualization_pie(ctx_pie_visualization, error_handler)
+#pipeline_visualization_pie(ctx_pie_visualization, error_handler)
+pipeline_visualization_yale(ctx_pie_visualization, error_handler)

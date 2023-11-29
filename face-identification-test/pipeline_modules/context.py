@@ -17,6 +17,7 @@ class OpenTestingEntry:
     is_actual_match: int
     # Additional Infos:
     rotation_angle: int
+    scenario: str
 
 
 @dataclass

@@ -103,7 +103,8 @@ class DataPreparationPIE:
             gallery_image_file_name=str(gallery_image_id) + '_g.png',
             input_image_file_name=str(input_image_id) + '_i.png',
             is_actual_match=(1 if is_actual_match else 0),
-            rotation_angle=rotation_angle
+            rotation_angle=rotation_angle,
+            scenario='rotated'
         )
 
 

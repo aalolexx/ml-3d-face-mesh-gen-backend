@@ -1,6 +1,8 @@
 import os
-import cv2
+from PIL import Image
+import numpy as np
 import mtcnn
+import matplotlib.pyplot as plt
 
 from termcolor import cprint
 
@@ -36,8 +38,10 @@ class DataPreparation3D:
                 continue
 
             full_image_path = context.working_dir_path + '/' + file_name
-            image = cv2.imread(full_image_path)
-            face_rects = self._detector.detect_faces(image)
+            image = Image.open(full_image_path)
+            image = image.convert("RGB")
+            image_np = np.array(image)
+            face_rects = self._detector.detect_faces(image_np)
 
             # The Face may be covered too much or the image is corrupt. in this case warn the user and delete the image
             if len(face_rects) <= 0:

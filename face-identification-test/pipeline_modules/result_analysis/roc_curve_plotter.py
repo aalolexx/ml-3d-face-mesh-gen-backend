@@ -49,6 +49,7 @@ class RocCurvePlotter:
         ax.set_xlabel('False Positive Rate')
         ax.set_ylabel('True Positive Rate')
         ax.set_ylim(0, 1.01)
+        ax.set_xlim(0, 1)
         plt.title('ROC Curve')
         for cur_method_roc in roc_data:
             sns.lineplot(x=cur_method_roc['fpr'],

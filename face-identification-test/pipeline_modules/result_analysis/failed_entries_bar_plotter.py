@@ -25,7 +25,6 @@ class FailedEntriesBarPlotter:
             })
 
         pd_data = pd.DataFrame(failed_method_counter)
-        print(pd_data)
 
         sns.set_theme()
         sns.set_context('paper')
