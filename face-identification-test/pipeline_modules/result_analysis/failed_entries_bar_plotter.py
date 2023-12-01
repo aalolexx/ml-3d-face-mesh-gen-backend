@@ -3,6 +3,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import os
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
@@ -11,6 +12,10 @@ from pipeline_util.enums import ComparisonMethods
 class FailedEntriesBarPlotter:
     """Plots a Bar chart showing the failed entrys per method
     from the context.panda_testing_entries table"""
+    def __init__(self, export_subdir: str) -> None:
+        self._export_subdir = export_subdir
+
+
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('FailedEntriesBarPlotter: started', 'cyan')
@@ -26,6 +31,10 @@ class FailedEntriesBarPlotter:
 
         pd_data = pd.DataFrame(failed_method_counter)
 
+        save_path = context.output_dir_path + '/' + self._export_subdir + '/'
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
         sns.set_theme()
         sns.set_context('paper')
         method_palette = [m.color for m in ComparisonMethods]
@@ -36,7 +45,8 @@ class FailedEntriesBarPlotter:
                     palette=method_palette,
                     orient='h')
         plt.title('Failed Entries')
-        plt.show()
+        plt.savefig(save_path + 'count_failed_entries.png')
+        plt.close()
 
         cprint('FailedEntriesBarPlotter: done', 'green')
         next_step(context)

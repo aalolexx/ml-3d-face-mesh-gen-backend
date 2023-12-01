@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import pandas as pd
+import os
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
@@ -10,8 +11,8 @@ from pipeline_util.enums import ComparisonMethods
 
 class ConfusionMatrixPlotter:
     """Plots the Confusion Matrix from the context.panda_testing_entries table"""
-    def __init__(self, additional_data_filter: str) -> None:
-        self._additional_data_filter = additional_data_filter
+    def __init__(self, export_subdir: str) -> None:
+        self._export_subdir = export_subdir
 
 
     def __call__(self, context: Context, next_step: NextStep) -> None:
@@ -19,8 +20,6 @@ class ConfusionMatrixPlotter:
         cprint('ConfusionMatrixPlotter: started', 'cyan')
 
         pf = context.panda_testing_entries
-        if self._additional_data_filter:
-            pf = pf[eval(self._additional_data_filter)]
 
         pf["is_actual_match"] = pf["is_actual_match"].astype(int)
 
@@ -31,6 +30,10 @@ class ConfusionMatrixPlotter:
 
         confusion_1 = confusion_matrix(pf_1['is_actual_match'], pf_1['decision'])
         confusion_2 = confusion_matrix(pf_2['is_actual_match'], pf_2['decision'])
+
+        save_path = context.output_dir_path + '/' + self._export_subdir + '/'
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
 
         # Create a heatmap to visualize the confusion matrix
 
@@ -53,7 +56,8 @@ class ConfusionMatrixPlotter:
         ax1.set_aspect('equal', 'box')
         ax2.set_aspect('equal', 'box')
 
-        plt.show()
+        plt.savefig(save_path + 'confusion_matrix.png')
+        plt.close()
 
         cprint('ConfusionMatrixPlotter: done', 'green')
         next_step(context)

@@ -3,6 +3,7 @@ from sklearn.metrics import roc_curve, roc_auc_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import os
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
@@ -12,6 +13,10 @@ from pipeline_util.enums import ComparisonMethods
 
 class RocCurvePlotter:
     """Plots the ROC Curve from the context.panda_testing_entries table"""
+    def __init__(self, export_subdir: str) -> None:
+        self._export_subdir = export_subdir
+
+
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('RocCurvePlotter: started', 'cyan')
@@ -36,6 +41,10 @@ class RocCurvePlotter:
                 'roc_auc': roc_auc
             })
 
+        save_path = context.output_dir_path + '/' + self._export_subdir + '/'
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
         # Plot the ROC curve
         sns.set_theme()
         sns.set_context('paper')
@@ -52,7 +61,8 @@ class RocCurvePlotter:
                          label=cur_method_roc['method_title'] + '(AUC = {:.2f})'.format(cur_method_roc['roc_auc']),
                          color=cur_method_roc['color'])
 
-        plt.show()
+        plt.savefig(save_path + 'ROC_curve.png')
+        plt.close()
 
         cprint('RocCurvePlotter: done', 'green')
         next_step(context)

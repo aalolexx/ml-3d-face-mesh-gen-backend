@@ -86,43 +86,61 @@ def get_test_pipeline_for_dataset(dataset_prep_module, pkl_suffix):
 
 
 def get_pipeline_t1():
-    # TODO
-    return None
+    yale_query = 'scenario == "' + Scenarios.HAPPY.value + '"'
+    pie_query = 'rotation_angle == 0'
 
-
-def get_pipeline_t2(pkl_suffix: str):
     return Pipeline[Context](
-        # Read Results from previous pipeline part
-        ResultTablePKLReader('comparison_results_' + pkl_suffix + '.pkl'),
+        # First Use Yale Test Data here
+        ResultTablePKLReader(
+            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl',
+            additional_data_query=yale_query),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(),
-        CategorizedBasedBarPlotter('rotation_angle'),
-        FailedEntriesBarPlotter()
+        RocCurvePlotter(export_subdir='t1'),
+
+        # Then the same for PIE
+        ResultTablePKLReader(
+            pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
+            additional_data_query=pie_query),
+        # Make Decisions from the given predictions
+        DecisionMaker(),
+        # Result Plotting
+        RocCurvePlotter(export_subdir='t1'),
     )
 
 
-def get_pipeline_t3(pkl_suffix: str):
+def get_pipeline_t2():
+    return Pipeline[Context](
+        ResultTablePKLReader('comparison_results_' + Datasets.MULTIPIE.name + '.pkl'),
+        # Make Decisions from the given predictions
+        DecisionMaker(),
+        # Result Plotting
+        RocCurvePlotter(export_subdir='t2'),
+        CategorizedBasedBarPlotter(group_by_category='rotation_angle', export_subdir='t2'),
+        FailedEntriesBarPlotter(export_subdir='t2')
+    )
+
+
+def get_pipeline_t3():
     t3_data_query = 'scenario == "' + Scenarios.CENTERLIGHT.value + '" | '\
                   + 'scenario == "' + Scenarios.LEFTLIGHT.value + '" | '\
                   + 'scenario == "' + Scenarios.RIGHTLIGHT.value + '"'
 
     return Pipeline[Context](
-        # Read Results from previous pipeline part
         ResultTablePKLReader(
-            pkl_file_name='comparison_results_' + pkl_suffix + '.pkl',
+            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl',
             additional_data_query=t3_data_query),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(),
-        CategorizedBasedBarPlotter('scenario'),
-        FailedEntriesBarPlotter()
+        RocCurvePlotter(export_subdir='t3'),
+        CategorizedBasedBarPlotter(group_by_category='scenario', export_subdir='t3'),
+        FailedEntriesBarPlotter(export_subdir='t3')
     )
 
 
-def get_pipeline_t4(pkl_suffix: str):
+def get_pipeline_t4():
     t4_data_query = 'scenario == "' + Scenarios.NORMAL.value + '" | ' \
                     + 'scenario == "' + Scenarios.HAPPY.value + '" | ' \
                     + 'scenario == "' + Scenarios.SAD.value + '" | ' \
@@ -131,16 +149,15 @@ def get_pipeline_t4(pkl_suffix: str):
                     + 'scenario == "' + Scenarios.WINK.value + '"'
 
     return Pipeline[Context](
-        # Read Results from previous pipeline part
         ResultTablePKLReader(
-            pkl_file_name='comparison_results_' + pkl_suffix + '.pkl',
+            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl',
             additional_data_query=t4_data_query),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(),
-        CategorizedBasedBarPlotter('scenario'),
-        FailedEntriesBarPlotter()
+        RocCurvePlotter(export_subdir='t4'),
+        CategorizedBasedBarPlotter(group_by_category='scenario', export_subdir='t4'),
+        FailedEntriesBarPlotter(export_subdir='t4')
     )
 
 
@@ -154,16 +171,16 @@ def get_pipeline_t6():
     return None
 
 
-def get_pipeline_t7(pkl_suffix: str):
+def get_pipeline_t7():
     return Pipeline[Context](
         # Read Results from previous pipeline part
-        ResultTablePKLReader('comparison_results_' + pkl_suffix + '.pkl'),
+        ResultTablePKLReader('comparison_results_' + Datasets.LFW.name + '.pkl'),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(),  # zb pf["rotation_angle"] == -60
-        ConfusionMatrixPlotter(''),
-        FailedEntriesBarPlotter()
+        RocCurvePlotter(export_subdir='t7'),
+        ConfusionMatrixPlotter(export_subdir='t7'),
+        FailedEntriesBarPlotter(export_subdir='t7')
     )
 
 
@@ -195,25 +212,26 @@ def run_analyzer(dataset: Datasets, test_entry_count: int, test_all_available: b
 
 
 def run_t1():
-    # TODO
-    return
+    ctx = get_new_context()
+    pipeline = get_pipeline_t1()
+    pipeline(ctx, error_handler)
 
 
 def run_t2():
     ctx = get_new_context()
-    pipeline_pie = get_pipeline_t2(Datasets.MULTIPIE.name)
+    pipeline_pie = get_pipeline_t2()
     pipeline_pie(ctx, error_handler)
 
 
 def run_t3():
     ctx = get_new_context()
-    pipeline_yale = get_pipeline_t3(Datasets.YALE.name)
+    pipeline_yale = get_pipeline_t3()
     pipeline_yale(ctx, error_handler)
 
 
 def run_t4():
     ctx = get_new_context()
-    pipeline_yale = get_pipeline_t4(Datasets.YALE.name)
+    pipeline_yale = get_pipeline_t4()
     pipeline_yale(ctx, error_handler)
     return
 
@@ -230,5 +248,5 @@ def run_t6():
 
 def run_t7():
     ctx = get_new_context()
-    pipeline_lfw = get_pipeline_t7(Datasets.LFW.name)
+    pipeline_lfw = get_pipeline_t7()
     pipeline_lfw(ctx, error_handler)
