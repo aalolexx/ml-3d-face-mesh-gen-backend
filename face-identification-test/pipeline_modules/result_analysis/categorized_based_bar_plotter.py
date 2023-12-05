@@ -41,8 +41,9 @@ class CategorizedBasedBarPlotter:
                     'accuracy': accuracy,
                     'precision': precision,
                     'recall': recall,
+                    'actual_mismatches': method_results.query('is_actual_match == 0')['open_testing_entry_id'].count(),
+                    'actual_matches': method_results.query('is_actual_match == 1')['open_testing_entry_id'].count(),
                     'count': method_results['open_testing_entry_id'].count()
-
                 })
 
         seaborn_data = pd.DataFrame(result_analysis)
@@ -85,8 +86,12 @@ class CategorizedBasedBarPlotter:
         plt.close()
 
         # Count Entries
-        sns.barplot(x='category_name', y='count', hue='method', data=seaborn_data, palette=method_palette)
-        # plt.show()
+        #pd.set_option('display.max_columns', None)
+        #print(seaborn_data[['method', 'category_name', 'actual_mismatches', 'count']])
+
+        fig, ax = plt.subplots(1, 2)
+        sns.barplot(x='category_name', y='actual_matches', hue='method', data=seaborn_data, palette=method_palette, ax=ax[0])
+        sns.barplot(x='category_name', y='actual_mismatches', hue='method', data=seaborn_data, palette=method_palette, ax=ax[1])
         plt.savefig(save_path + 'entry_count_by' + self._group_by_category + '.png')
         plt.close()
 

@@ -3,8 +3,11 @@ from pipeline.pipeline import *
 from pipeline_modules.context import Context
 from pipeline_modules.data_preparation.data_preparation_3d import DataPreparation3D
 from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparationLFW
-from pipeline_modules.data_preparation.data_preparation_yale import DataPreparationYale, Scenarios
+from pipeline_modules.data_preparation.data_preparation_yale import DataPreparationYale
+from pipeline_modules.data_preparation.data_preparation_yale import Expressions as YaleExpressions
 from pipeline_modules.data_preparation.data_preparation_pie import DataPreparationPIE
+from pipeline_modules.data_preparation.data_preparation_pie import Expressions as PIEExpressions
+from pipeline_modules.data_preparation.data_preparation_pie import Lightings as PIELightings
 from pipeline_modules.image_analysis.deep_3d_coefficient_generator import Deep3DCoefficientGenerator
 from pipeline_modules.image_analysis.vpn_image_creator import VPNImageCreator
 from pipeline_modules.image_analysis.face_recon_2d_encoder import FaceRecon2DEncoder
@@ -86,7 +89,7 @@ def get_test_pipeline_for_dataset(dataset_prep_module, pkl_suffix):
 
 
 def get_pipeline_t1():
-    yale_query = 'scenario == "' + Scenarios.HAPPY.value + '"'
+    yale_query = 'expression == "' + YaleExpressions.HAPPY.value + '"'
     pie_query = 'rotation_angle == 0'
 
     return Pipeline[Context](
@@ -111,8 +114,12 @@ def get_pipeline_t1():
 
 
 def get_pipeline_t2():
+    t2_query = 'expression =="' + PIEExpressions.NORMAL.value + '"' \
+               'and lighting == "' + PIELightings.CENTERLIGHT.value + '"'
     return Pipeline[Context](
-        ResultTablePKLReader('comparison_results_' + Datasets.MULTIPIE.name + '.pkl'),
+        ResultTablePKLReader(
+            pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
+            additional_data_query=t2_query),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
@@ -123,52 +130,64 @@ def get_pipeline_t2():
 
 
 def get_pipeline_t3():
-    t3_data_query = 'scenario == "' + Scenarios.CENTERLIGHT.value + '" | '\
-                  + 'scenario == "' + Scenarios.LEFTLIGHT.value + '" | '\
-                  + 'scenario == "' + Scenarios.RIGHTLIGHT.value + '"'
-
     return Pipeline[Context](
         ResultTablePKLReader(
-            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl',
-            additional_data_query=t3_data_query),
+            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl'),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
         RocCurvePlotter(export_subdir='t3'),
-        CategorizedBasedBarPlotter(group_by_category='scenario', export_subdir='t3'),
+        CategorizedBasedBarPlotter(group_by_category='lighting', export_subdir='t3'),
         FailedEntriesBarPlotter(export_subdir='t3')
     )
 
 
 def get_pipeline_t4():
-    t4_data_query = 'scenario == "' + Scenarios.NORMAL.value + '" | ' \
-                    + 'scenario == "' + Scenarios.HAPPY.value + '" | ' \
-                    + 'scenario == "' + Scenarios.SAD.value + '" | ' \
-                    + 'scenario == "' + Scenarios.SLEEPY.value + '" | ' \
-                    + 'scenario == "' + Scenarios.SURPRISED.value + '" | ' \
-                    + 'scenario == "' + Scenarios.WINK.value + '"'
-
     return Pipeline[Context](
         ResultTablePKLReader(
-            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl',
-            additional_data_query=t4_data_query),
+            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl'),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
         RocCurvePlotter(export_subdir='t4'),
-        CategorizedBasedBarPlotter(group_by_category='scenario', export_subdir='t4'),
+        CategorizedBasedBarPlotter(group_by_category='expression', export_subdir='t4'),
         FailedEntriesBarPlotter(export_subdir='t4')
     )
 
 
 def get_pipeline_t5():
-    # TODO
-    return None
+    t5_query = 'expression =="' + PIEExpressions.NORMAL.value + '"' \
+               'and lighting != "' + PIELightings.CENTERLIGHT.value + '"'
+    return Pipeline[Context](
+        ResultTablePKLReader(
+            pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
+            additional_data_query=t5_query),
+        # Make Decisions from the given predictions
+        DecisionMaker(),
+        # Result Plotting
+        RocCurvePlotter(export_subdir='t5'),
+        CategorizedBasedBarPlotter(group_by_category='rotation_angle', export_subdir='t5'),
+        CategorizedBasedBarPlotter(group_by_category='lighting', export_subdir='t5'),
+        FailedEntriesBarPlotter(export_subdir='t5')
+    )
 
 
 def get_pipeline_t6():
-    # TODO
-    return None
+    t6_query = 'expression !="' + PIEExpressions.NORMAL.value + '"' \
+               'and lighting != "' + PIELightings.CENTERLIGHT.value + '"'
+    return Pipeline[Context](
+        ResultTablePKLReader(
+            pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
+            additional_data_query=t6_query),
+        # Make Decisions from the given predictions
+        DecisionMaker(),
+        # Result Plotting
+        RocCurvePlotter(export_subdir='t6'),
+        CategorizedBasedBarPlotter(group_by_category='rotation_angle', export_subdir='t6'),
+        CategorizedBasedBarPlotter(group_by_category='lighting', export_subdir='t6'),
+        CategorizedBasedBarPlotter(group_by_category='expression', export_subdir='t6'),
+        FailedEntriesBarPlotter(export_subdir='t6')
+    )
 
 
 def get_pipeline_t7():
@@ -233,17 +252,18 @@ def run_t4():
     ctx = get_new_context()
     pipeline_yale = get_pipeline_t4()
     pipeline_yale(ctx, error_handler)
-    return
 
 
 def run_t5():
-    # TODO
-    return
+    ctx = get_new_context()
+    pipeline_pie = get_pipeline_t5()
+    pipeline_pie(ctx, error_handler)
 
 
 def run_t6():
-    # TODO
-    return
+    ctx = get_new_context()
+    pipeline_pie = get_pipeline_t6()
+    pipeline_pie(ctx, error_handler)
 
 
 def run_t7():

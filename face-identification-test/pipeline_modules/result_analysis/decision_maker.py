@@ -1,6 +1,7 @@
 from termcolor import cprint
 from sklearn.metrics import roc_curve, roc_auc_score
 import numpy as np
+import pandas as pd
 
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
@@ -33,6 +34,8 @@ class DecisionMaker:
                 1,
                 0
             )
+
+        pf.to_excel(r'' + context.output_dir_path + '/tmp_output.xlsx', index=False)
 
         cprint('DecisionMaker: done', 'green')
         next_step(context)
