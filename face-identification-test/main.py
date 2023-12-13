@@ -18,10 +18,10 @@ def headline_print(title):
 
 headline_print('Printing Results')
 
-run_t1()
+#run_t1()
 run_t2()
-run_t3()
-run_t4()
-run_t5()
-run_t6()
-run_t7()
+#run_t3()
+#run_t4()
+#run_t5()
+#run_t6()
+#run_t7()

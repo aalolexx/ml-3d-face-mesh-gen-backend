@@ -3,7 +3,7 @@ sys.path.append('../deep-3d-face-recon')
 
 from pipeline.pipeline import *
 from pipeline_modules.context import Context
-from pipeline_modules.data_preparation.pipe_cleaner import PipeCleaner
+from pipeline_modules.data_preparation.subdir_cleaner import SubdirCleaner
 from pipeline_modules.data_preparation.data_preparation_3d import DataPreparation3D
 from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparationLFW
 from pipeline_modules.data_preparation.data_preparation_yale import DataPreparationYale
@@ -25,6 +25,7 @@ from pipeline_modules.result_analysis.failed_entries_bar_plotter import FailedEn
 from pipeline_modules.result_analysis.result_table_pkl_reader import ResultTablePKLReader
 from pipeline_modules.result_analysis.result_table_pkl_saver import ResultTablePKLSaver
 from pipeline_modules.result_analysis.decision_maker import DecisionMaker
+from pipeline_modules.result_analysis.scikit_reporter import ScikitReporter
 from pipeline_util.enums import ComparisonFramework, Datasets
 
 
@@ -63,7 +64,7 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
 
 def get_test_pipeline_for_dataset(dataset_prep_module, pkl_suffix):
     return Pipeline[Context](
-        PipeCleaner(),
+        SubdirCleaner(working=True),
         # Data Preparations
         dataset_prep_module,
         DataPreparation3D('detections'),
@@ -95,6 +96,7 @@ def get_pipeline_t1():
     pie_query = 'rotation_angle == 0'
 
     return Pipeline[Context](
+        SubdirCleaner(output=True, custom_path='t1'),
         # First Use Yale Test Data here
         ResultTablePKLReader(
             pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl',
@@ -120,15 +122,29 @@ def get_pipeline_t1():
 def get_pipeline_t2():
     t2_query = 'expression =="' + PIEExpressions.NORMAL.value + '"' \
                'and lighting == "' + PIELightings.CENTERLIGHT.value + '"'
+    query_extreme_rotations = 'rotation_angle <= -45 or rotation_angle > 0'
+    query_normal_rotations = 'rotation_angle > -45 or rotation_angle < 45'
+
     return Pipeline[Context](
+        SubdirCleaner(output=True, custom_path='t2'),
         ResultTablePKLReader(
             pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
             additional_data_query=t2_query),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t2', dataset_name=Datasets.MULTIPIE.name),
-        ConfusionMatrixPlotter(export_subdir='t2', dataset_name=Datasets.MULTIPIE.name),
+        ScikitReporter(export_subdir='t2',
+                       dataset_name=Datasets.MULTIPIE.name),
+        ScikitReporter(export_subdir='t2',
+                       dataset_name=Datasets.MULTIPIE.name,
+                       additional_data_query=query_extreme_rotations),
+        ScikitReporter(export_subdir='t2',
+                       dataset_name=Datasets.MULTIPIE.name,
+                       additional_data_query=query_normal_rotations),
+        RocCurvePlotter(export_subdir='t2',
+                        dataset_name=Datasets.MULTIPIE.name),
+        ConfusionMatrixPlotter(export_subdir='t2',
+                               dataset_name=Datasets.MULTIPIE.name),
         CategorizedBasedBarPlotter(group_by_category='rotation_angle',
                                    export_subdir='t2',
                                    dataset_name=Datasets.MULTIPIE.name),
@@ -138,6 +154,7 @@ def get_pipeline_t2():
 
 def get_pipeline_t3():
     return Pipeline[Context](
+        SubdirCleaner(output=True, custom_path='t3'),
         ResultTablePKLReader(
             pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl'),
         # Make Decisions from the given predictions
@@ -153,6 +170,7 @@ def get_pipeline_t3():
 
 def get_pipeline_t4():
     return Pipeline[Context](
+        SubdirCleaner(output=True, custom_path='t4'),
         ResultTablePKLReader(
             pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl'),
         # Make Decisions from the given predictions
@@ -170,6 +188,7 @@ def get_pipeline_t5():
     t5_query = 'expression =="' + PIEExpressions.NORMAL.value + '"' \
                'and lighting != "' + PIELightings.CENTERLIGHT.value + '"'
     return Pipeline[Context](
+        SubdirCleaner(output=True, custom_path='t5'),
         ResultTablePKLReader(
             pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
             additional_data_query=t5_query),
@@ -191,6 +210,7 @@ def get_pipeline_t6():
     t6_query = 'expression !="' + PIEExpressions.NORMAL.value + '"' \
                'and lighting != "' + PIELightings.CENTERLIGHT.value + '"'
     return Pipeline[Context](
+        SubdirCleaner(output=True, custom_path='t6'),
         ResultTablePKLReader(
             pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
             additional_data_query=t6_query),
@@ -213,6 +233,7 @@ def get_pipeline_t6():
 
 def get_pipeline_t7():
     return Pipeline[Context](
+        SubdirCleaner(output=True, custom_path='t7'),
         # Read Results from previous pipeline part
         ResultTablePKLReader('comparison_results_' + Datasets.LFW.name + '.pkl'),
         # Make Decisions from the given predictions
