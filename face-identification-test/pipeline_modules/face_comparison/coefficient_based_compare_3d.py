@@ -14,8 +14,8 @@ class CoefficientBasedCompare3D:
         cprint('CoefficientBasedCompare3D: started', 'cyan')
 
         # Loop all open testing entries, get 3d coeffs and save comparison result to testing results
-        print('comparing ' + str(len(context.open_testing_entry.items())) + ' image pairs')
-        for id, testing_entry in context.open_testing_entry.items():
+        print('comparing ' + str(len(context.open_testing_entries.items())) + ' image pairs')
+        for id, testing_entry in context.open_testing_entries.items():
             cosine_similarity = 0
             try:
                 gallery_image_coeffs = context.deep_3d_coeffs[

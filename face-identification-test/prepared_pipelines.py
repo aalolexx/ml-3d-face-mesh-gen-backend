@@ -1,6 +1,9 @@
 import sys
+sys.path.append('../deep-3d-face-recon')
+
 from pipeline.pipeline import *
 from pipeline_modules.context import Context
+from pipeline_modules.data_preparation.pipe_cleaner import PipeCleaner
 from pipeline_modules.data_preparation.data_preparation_3d import DataPreparation3D
 from pipeline_modules.data_preparation.data_preparation_lfw import DataPreparationLFW
 from pipeline_modules.data_preparation.data_preparation_yale import DataPreparationYale
@@ -24,8 +27,6 @@ from pipeline_modules.result_analysis.result_table_pkl_saver import ResultTableP
 from pipeline_modules.result_analysis.decision_maker import DecisionMaker
 from pipeline_util.enums import ComparisonFramework, Datasets
 
-sys.path.append('../deep-3d-face-recon')
-
 
 #
 # Set up Context and error handler
@@ -40,7 +41,7 @@ def get_new_context():
         misc_dir_path='data/misc',
         deep_3d_coeffs={},
         face_recognition_2d_encodings={},
-        open_testing_entry={},
+        open_testing_entries={},
         testing_result_entries=[],
         failed_testing_entries=[],
         panda_testing_entries=None,
@@ -62,6 +63,7 @@ def error_handler(error: Exception, context: Context, next_step: NextStep):
 
 def get_test_pipeline_for_dataset(dataset_prep_module, pkl_suffix):
     return Pipeline[Context](
+        PipeCleaner(),
         # Data Preparations
         dataset_prep_module,
         DataPreparation3D('detections'),
@@ -100,7 +102,8 @@ def get_pipeline_t1():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t1'),
+        RocCurvePlotter(export_subdir='t1', dataset_name=Datasets.YALE.name),
+        ConfusionMatrixPlotter(export_subdir='t1', dataset_name=Datasets.YALE.name),
 
         # Then the same for PIE
         ResultTablePKLReader(
@@ -109,7 +112,8 @@ def get_pipeline_t1():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t1'),
+        RocCurvePlotter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
+        ConfusionMatrixPlotter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
     )
 
 
@@ -123,9 +127,12 @@ def get_pipeline_t2():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t2'),
-        CategorizedBasedBarPlotter(group_by_category='rotation_angle', export_subdir='t2'),
-        FailedEntriesBarPlotter(export_subdir='t2')
+        RocCurvePlotter(export_subdir='t2', dataset_name=Datasets.MULTIPIE.name),
+        ConfusionMatrixPlotter(export_subdir='t2', dataset_name=Datasets.MULTIPIE.name),
+        CategorizedBasedBarPlotter(group_by_category='rotation_angle',
+                                   export_subdir='t2',
+                                   dataset_name=Datasets.MULTIPIE.name),
+        FailedEntriesBarPlotter(export_subdir='t2', dataset_name=Datasets.MULTIPIE.name)
     )
 
 
@@ -136,9 +143,11 @@ def get_pipeline_t3():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t3'),
-        CategorizedBasedBarPlotter(group_by_category='lighting', export_subdir='t3'),
-        FailedEntriesBarPlotter(export_subdir='t3')
+        RocCurvePlotter(export_subdir='t3', dataset_name=Datasets.YALE.name),
+        CategorizedBasedBarPlotter(group_by_category='lighting',
+                                   export_subdir='t3',
+                                   dataset_name=Datasets.YALE.name),
+        FailedEntriesBarPlotter(export_subdir='t3', dataset_name=Datasets.YALE.name)
     )
 
 
@@ -149,9 +158,11 @@ def get_pipeline_t4():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t4'),
-        CategorizedBasedBarPlotter(group_by_category='expression', export_subdir='t4'),
-        FailedEntriesBarPlotter(export_subdir='t4')
+        RocCurvePlotter(export_subdir='t4', dataset_name=Datasets.YALE.name),
+        CategorizedBasedBarPlotter(group_by_category='expression',
+                                   export_subdir='t4',
+                                   dataset_name=Datasets.YALE.name),
+        FailedEntriesBarPlotter(export_subdir='t4', dataset_name=Datasets.YALE.name)
     )
 
 
@@ -165,10 +176,14 @@ def get_pipeline_t5():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t5'),
-        CategorizedBasedBarPlotter(group_by_category='rotation_angle', export_subdir='t5'),
-        CategorizedBasedBarPlotter(group_by_category='lighting', export_subdir='t5'),
-        FailedEntriesBarPlotter(export_subdir='t5')
+        RocCurvePlotter(export_subdir='t5', dataset_name=Datasets.MULTIPIE.name),
+        CategorizedBasedBarPlotter(group_by_category='rotation_angle',
+                                   export_subdir='t5',
+                                   dataset_name=Datasets.MULTIPIE.name),
+        CategorizedBasedBarPlotter(group_by_category='lighting',
+                                   export_subdir='t5',
+                                   dataset_name=Datasets.MULTIPIE.name),
+        FailedEntriesBarPlotter(export_subdir='t5', dataset_name=Datasets.MULTIPIE.name)
     )
 
 
@@ -182,11 +197,17 @@ def get_pipeline_t6():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t6'),
-        CategorizedBasedBarPlotter(group_by_category='rotation_angle', export_subdir='t6'),
-        CategorizedBasedBarPlotter(group_by_category='lighting', export_subdir='t6'),
-        CategorizedBasedBarPlotter(group_by_category='expression', export_subdir='t6'),
-        FailedEntriesBarPlotter(export_subdir='t6')
+        RocCurvePlotter(export_subdir='t6', dataset_name=Datasets.MULTIPIE.name),
+        CategorizedBasedBarPlotter(group_by_category='rotation_angle',
+                                   export_subdir='t6',
+                                   dataset_name=Datasets.MULTIPIE.name),
+        CategorizedBasedBarPlotter(group_by_category='lighting',
+                                   export_subdir='t6',
+                                   dataset_name=Datasets.MULTIPIE.name),
+        CategorizedBasedBarPlotter(group_by_category='expression',
+                                   export_subdir='t6',
+                                   dataset_name=Datasets.MULTIPIE.name),
+        FailedEntriesBarPlotter(export_subdir='t6', dataset_name=Datasets.MULTIPIE.name)
     )
 
 
@@ -197,9 +218,9 @@ def get_pipeline_t7():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        RocCurvePlotter(export_subdir='t7'),
-        ConfusionMatrixPlotter(export_subdir='t7'),
-        FailedEntriesBarPlotter(export_subdir='t7')
+        RocCurvePlotter(export_subdir='t7', dataset_name=Datasets.LFW.name),
+        ConfusionMatrixPlotter(export_subdir='t7', dataset_name=Datasets.LFW.name),
+        FailedEntriesBarPlotter(export_subdir='t7', dataset_name=Datasets.LFW.name)
     )
 
 

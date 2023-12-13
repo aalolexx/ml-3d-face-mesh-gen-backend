@@ -17,7 +17,7 @@ class FaceRecon2DEncoder:
 
         failed_images = []
 
-        for id, testing_entry in context.open_testing_entry.items():
+        for id, testing_entry in context.open_testing_entries.items():
             try:
                 gallery_image_path = context.working_dir_path + '/' + testing_entry.gallery_image_file_name
                 input_image_path = context.working_dir_path + '/' + testing_entry.input_image_file_name
@@ -38,7 +38,7 @@ class FaceRecon2DEncoder:
 
         # Now for the VPN Image, if required
         if self._include_vpn_images:
-            for id, testing_entry in context.open_testing_entry.items():
+            for id, testing_entry in context.open_testing_entries.items():
                 try:
                     vpn_path_prefix = context.working_dir_path + '/vpn_'
                     gallery_vpn_image_path = vpn_path_prefix + testing_entry.gallery_image_file_name
@@ -55,8 +55,6 @@ class FaceRecon2DEncoder:
                 input_vpn_image_name = 'vpn_' + testing_entry.input_image_file_name.split('.')[0]
                 self.add_encoding_to_context(context, gallery_vpn_image_encodings, gallery_vpn_image_name, True)
                 self.add_encoding_to_context(context, input_vpn_image_encodings, input_vpn_image_name, True)
-
-        # TODO protocol failed entries
 
         cprint('FaceRecon2DEncoder: done', 'green')
         next_step(context)

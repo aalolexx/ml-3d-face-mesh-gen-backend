@@ -36,7 +36,7 @@ class Context:
     misc_dir_path: str
     deep_3d_coeffs: dict
     face_recognition_2d_encodings: dict
-    open_testing_entry: Dict[int, OpenTestingEntry]
+    open_testing_entries: Dict[int, OpenTestingEntry]
     testing_result_entries: List[TestingResultEntry]
     failed_testing_entries: List[FailedTestingEntry]
     panda_testing_entries: any

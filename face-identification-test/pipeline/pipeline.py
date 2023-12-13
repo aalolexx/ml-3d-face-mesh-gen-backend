@@ -2,7 +2,7 @@
 # CODE SOURCE:
 # https://github.com/dkraczkowski/dkraczkowski.github.io/blob/main/articles/crafting-data-processing-pipeline/src/pipeline/pipeline.py
 # FROM Dawid Kraczkowski, ACCESSED ON 16.10.2023
-# modified to be compatible with python 3.6
+# modified to be compatible with python 3.6 and added some extra prints
 #
 
 from termcolor import cprint

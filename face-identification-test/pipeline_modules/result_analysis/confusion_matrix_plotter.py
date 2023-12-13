@@ -2,6 +2,7 @@ from termcolor import cprint
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+from matplotlib import colors
 import pandas as pd
 import os
 
@@ -11,8 +12,9 @@ from pipeline_util.enums import ComparisonMethods
 
 class ConfusionMatrixPlotter:
     """Plots the Confusion Matrix from the context.panda_testing_entries table"""
-    def __init__(self, export_subdir: str) -> None:
+    def __init__(self, export_subdir: str, dataset_name: str) -> None:
         self._export_subdir = export_subdir
+        self._dataset_name = dataset_name
 
 
     def __call__(self, context: Context, next_step: NextStep) -> None:
@@ -23,41 +25,59 @@ class ConfusionMatrixPlotter:
 
         pf["is_actual_match"] = pf["is_actual_match"].astype(int)
 
-        # TODO dynamic subplotting according to enum
-
-        pf_1 = pf[(pf.method == ComparisonMethods.COEFFICIENT_BASED_3D.name)]
-        pf_2 = pf[(pf.method == ComparisonMethods.FACE_RECOGNITION_DISTANCE_2D.name)]
-
-        confusion_1 = confusion_matrix(pf_1['is_actual_match'], pf_1['decision'])
-        confusion_2 = confusion_matrix(pf_2['is_actual_match'], pf_2['decision'])
-
         save_path = context.output_dir_path + '/' + self._export_subdir + '/'
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
-        # Create a heatmap to visualize the confusion matrix
+        # Prepare data for confusion matrices
+        result_frames = []
+        confusion_matrices = []
 
-        fig, (ax1, ax2) = plt.subplots(ncols=2)
+        for method in ComparisonMethods:
+            current_pf = pf[(pf.method == method.name)]
+            result_frames.append(current_pf)
+            current_confusion = confusion_matrix(current_pf['is_actual_match'], current_pf['decision'])
+            confusion_matrices.append(current_confusion)
+
+        # Start Plotting
+        fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(16, 10))
+        axes = axes.flatten()  # for iteration
 
         sns.set_theme()
         sns.set_context('paper')
 
-        sns.heatmap(confusion_1, annot=True, cmap='Blues', xticklabels=['Negative', 'Positive'],
-                    yticklabels=['Negative', 'Positive'], ax=ax1, cbar=False)
-        sns.heatmap(confusion_2, annot=True, cmap='Blues', xticklabels=['Negative', 'Positive'],
-                    yticklabels=[], ax=ax2, cbar=False)
+        index = 0
+        for method in ComparisonMethods:
+            custom_cmap = self.create_custom_colormap('#1161b5')
+            if '2d' in method.name:
+                custom_cmap = self.create_custom_colormap('#b2298b')
+            sns.heatmap(confusion_matrices[index],
+                        annot=True,
+                        fmt='g',
+                        cmap=custom_cmap,
+                        xticklabels=['Negative', 'Positive'],
+                        yticklabels=['Negative', 'Positive'],
+                        ax=axes[index],
+                        cbar=False)
+            axes[index].set_title(method.title)
+            axes[index].set(xlabel='Predicted', ylabel='Actual')
+            axes[index].set_aspect('equal', 'box')
+            index += 1
 
-        ax1.set_title('3D Coefficient Based')
-        ax2.set_title('2D Face_Recognition')
-
-        ax1.set(xlabel='Predicted', ylabel='Actual')
-        ax2.set(xlabel='Predicted')
-
-        ax1.set_aspect('equal', 'box')
-        ax2.set_aspect('equal', 'box')
-
-        plt.savefig(save_path + 'confusion_matrix.png')
+        # Save Figure
+        plt.savefig(save_path + self._dataset_name + '_confusion_matrix.png', bbox_inches='tight', pad_inches=0)
         plt.close()
 
         cprint('ConfusionMatrixPlotter: done', 'green')
         next_step(context)
+
+    # Creates a custom color gradient for the cmap param. Going from white to a given color
+    def create_custom_colormap(self, hex_color):
+        rgb_color = colors.to_rgb(hex_color)
+        cmap_dict = {
+            'red': [(0.0, 1.0, 1.0), (1.0, rgb_color[0], rgb_color[0])],
+            'green': [(0.0, 1.0, 1.0), (1.0, rgb_color[1], rgb_color[1])],
+            'blue': [(0.0, 1.0, 1.0), (1.0, rgb_color[2], rgb_color[2])],
+        }
+        custom_cmap = colors.LinearSegmentedColormap('custom_cmap', cmap_dict)
+        return custom_cmap

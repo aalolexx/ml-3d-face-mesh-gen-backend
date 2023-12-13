@@ -13,8 +13,9 @@ from pipeline_util.enums import ComparisonMethods
 
 class RocCurvePlotter:
     """Plots the ROC Curve from the context.panda_testing_entries table"""
-    def __init__(self, export_subdir: str) -> None:
+    def __init__(self, export_subdir: str, dataset_name: str) -> None:
         self._export_subdir = export_subdir
+        self._dataset_name = dataset_name
 
 
     def __call__(self, context: Context, next_step: NextStep) -> None:
@@ -52,16 +53,16 @@ class RocCurvePlotter:
         plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')
         ax.set_xlabel('False Positive Rate')
         ax.set_ylabel('True Positive Rate')
-        ax.set_ylim(0, 1.01)
-        ax.set_xlim(0, 1)
-        plt.title('ROC Curve')
+        ax.set_ylim(-0.01, 1.01)
+        ax.set_xlim(-0.01, 1.01)
+        plt.title('ROC Curve (using ' + self._dataset_name + ')')
         for cur_method_roc in roc_data:
             sns.lineplot(x=cur_method_roc['fpr'],
                          y=cur_method_roc['tpr'],
                          label=cur_method_roc['method_title'] + '(AUC = {:.2f})'.format(cur_method_roc['roc_auc']),
                          color=cur_method_roc['color'])
 
-        plt.savefig(save_path + 'ROC_curve.png')
+        plt.savefig(save_path + self._dataset_name + '_ROC_curve.png', bbox_inches='tight', pad_inches=0)
         plt.close()
 
         cprint('RocCurvePlotter: done', 'green')

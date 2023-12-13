@@ -48,11 +48,6 @@ class DataPreparationPIE:
         cprint('------------------------------------', 'cyan')
         cprint('DataPreparationPIE: started', 'cyan')
 
-        # clean working dir
-        # TODO Make a cleanup pipeline module
-        shutil.rmtree(context.working_dir_path + '/')
-        os.makedirs(context.working_dir_path)
-
         complete_pie_dataset_dir = context.input_dir_path + '/' + self._pie_dataset_dir
         entry_counter = 0
         input_faces_count = 0
@@ -118,6 +113,7 @@ class DataPreparationPIE:
             if mismatch_counter >= self._entry_count_limit:
                 break
 
+        # TODO entry_count is not actual image value
         print('successfully moved ' + str(entry_counter) + ' images to working dir and prepared testing entry')
         cprint('DataPreparationPIE: done', 'green')
 
@@ -154,7 +150,7 @@ class DataPreparationPIE:
                                rotation_angle,
                                expression,
                                lighting):
-        context.open_testing_entry[open_testing_entry_id] = OpenTestingEntry(
+        context.open_testing_entries[open_testing_entry_id] = OpenTestingEntry(
             gallery_image_file_name=str(gallery_image_id) + '_g.png',
             input_image_file_name=str(input_image_id) + '_i.png',
             is_actual_match=(1 if is_actual_match else 0),
@@ -168,7 +164,7 @@ class DataPreparationPIE:
         # todo optimize this filter performance
         # TODO rethink logic of this one now that it is not only the rotation angle
         filtered_testing_entries = {
-            k: v for k, v in context.open_testing_entry.items()
+            k: v for k, v in context.open_testing_entries.items()
             if v.is_actual_match == 1 and (
                     v.rotation_angle == angle
                     and v.expression == expression
@@ -176,7 +172,7 @@ class DataPreparationPIE:
             )
         }
         random_item_key = choice(list(filtered_testing_entries))
-        if context.open_testing_entry[random_item_key].gallery_image_file_name == str(excluded_gallery_image_id) + '_g.png':
+        if context.open_testing_entries[random_item_key].gallery_image_file_name == str(excluded_gallery_image_id) + '_g.png':
             return self.get_random_mismatch_entry_key(context, excluded_gallery_image_id, angle, expression, lighting)
         else:
             return random_item_key

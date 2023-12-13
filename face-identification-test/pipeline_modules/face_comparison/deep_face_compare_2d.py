@@ -22,8 +22,8 @@ class DeepFaceCompare2D:
             method_name = ComparisonMethods.DEEPFACE_DISTANCE_2D_FACENET.name
 
         # Loop all open testing entries, get actual file images and save comparison result to testing results
-        print('comparing ' + str(len(context.open_testing_entry.items())) + ' image pairs')
-        for id, testing_entry in context.open_testing_entry.items():
+        print('comparing ' + str(len(context.open_testing_entries.items())) + ' image pairs')
+        for id, testing_entry in context.open_testing_entries.items():
             prediction = 0
             try:
                 gallery_image_path = context.working_dir_path + '/' + testing_entry.gallery_image_file_name

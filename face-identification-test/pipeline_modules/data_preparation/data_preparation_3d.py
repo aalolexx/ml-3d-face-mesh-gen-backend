@@ -28,7 +28,7 @@ class DataPreparation3D:
         if not os.path.exists(complete_detection_dir_path):
             os.makedirs(complete_detection_dir_path)
 
-        # TODO limit size of images
+        # TODO Future: limit size of images
         # Get All Imagesfrom working dir and create the respective detection landmark file
         image_file_names = os.listdir(context.working_dir_path)
         print('DataPreparation3D: found ' + str(len(image_file_names)) + ' images in working dir')
@@ -47,7 +47,9 @@ class DataPreparation3D:
             if len(face_rects) <= 0:
                 self.protocol_failed_entry(context, file_name)
             else:
-                face_rect = face_rects[0]  # TODO print a warning if more than 1 face on img
+                if len(face_rects) > 1:
+                    cprint('Multiple Faces in ' + file_name + ', taking first one', 'yellow')
+                face_rect = face_rects[0]
                 required_landmarks = self.get_required_landmarks(face_rect)
                 image_name = file_name.split('.')[0]
                 detection_file_path = complete_detection_dir_path + '/' + image_name + '.txt'

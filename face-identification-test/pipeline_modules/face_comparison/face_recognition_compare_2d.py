@@ -13,8 +13,8 @@ class FaceRecognitionCompare2D:
         cprint('FaceRecognitionCompare2D: started', 'cyan')
 
         # Loop all open testing entries, get 2d encodings and save comparison result to testing results
-        print('comparing ' + str(len(context.open_testing_entry.items())) + ' image pairs')
-        for id, testing_entry in context.open_testing_entry.items():
+        print('comparing ' + str(len(context.open_testing_entries.items())) + ' image pairs')
+        for id, testing_entry in context.open_testing_entries.items():
             prediction = 0
             try:
                 gallery_image_encoding = context.face_recognition_2d_encodings[

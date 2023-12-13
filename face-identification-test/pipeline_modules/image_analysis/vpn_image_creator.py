@@ -28,7 +28,7 @@ class VPNImageCreator:
         # TODO Create own average person image
         standard_person_image, standard_face_mtcnn = self.prepare_standard_face(context)
 
-        for id, testing_entry in context.open_testing_entry.items():
+        for id, testing_entry in context.open_testing_entries.items():
             try:
                 vpn_input_image_full_path = os.path.abspath(
                     context.working_dir_path + '/vpn_' + testing_entry.input_image_file_name)
@@ -46,7 +46,6 @@ class VPNImageCreator:
                     cv2.imwrite(vpn_gallery_image_full_path, vpn_gallery_image)
 
             except Exception as error:
-                # TODO this error happens at name splitting. check why there are names without a dot
                 cprint('Error creating vpn image for ' + str(id) + ', error: ' + str(error))
                 continue
 
@@ -56,21 +55,22 @@ class VPNImageCreator:
 
     def get_vpn_image_from_3d_coeffs(self, coeffs_3d, standard_person_image, standard_face_mtcnn):
         coeff_arr = get_coeff_array_from_coeff_dict(coeffs_3d)
+        # Generate a 2D Face Image by the 3DMM Coefficient Vector
         model_image = get_model_image(coeff_arr)
 
-        # TODO get eyes programatically
+        # Get eye positions of 3DMM Image and Standard Person Image
         model_eye_pos = [(80, 75), (140, 75)]
-
         sf_eye_pos = [
             standard_face_mtcnn['keypoints']['left_eye'],
             standard_face_mtcnn['keypoints']['right_eye']
         ]
 
+        # Get the scaling difference between the two faces for later image matching
         model_eye_distance = (model_eye_pos[1][0] - model_eye_pos[0][0])
         sf_eye_distance = (sf_eye_pos[1][0] - sf_eye_pos[0][0])
         scale_factor = sf_eye_distance / model_eye_distance
 
-        # Fit eye distance of model image to standard image for later overlay
+        # Scale the model image by the scaling difference
         model_image = cv2.normalize(model_image, None, 0, 255, cv2.NORM_MINMAX)
         model_image = model_image.astype(standard_person_image.dtype)
         model_image = cv2.resize(model_image, (0, 0), fx=scale_factor, fy=scale_factor)

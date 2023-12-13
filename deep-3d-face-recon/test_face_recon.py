@@ -1,4 +1,6 @@
-"""This script is the test script for Deep3DFaceRecon_pytorch
+"""
+This script is the test script for Deep3DFaceRecon_pytorch
+Small changes have been made: Added Method get_coeffs_from_image
 """
 
 import os
@@ -71,7 +73,6 @@ def test(rank, opt, name='examples'):
 #
 # Own custom method to just get the coefficients without visualizations
 #
-# TODO check if its better in face-identification-test dir
 def get_coeffs_from_image(rank, opt, name='examples'):
     device = torch.device(rank)
     torch.cuda.set_device(device)
@@ -87,7 +88,7 @@ def get_coeffs_from_image(rank, opt, name='examples'):
 
 
     for i in range(len(im_path)):
-        print("..." + str(i), im_path[i])
+        #print("..." + str(i), im_path[i])
         img_name = im_path[i].split(os.path.sep)[-1].replace('.png', '').replace('.jpg', '')
         if not os.path.isfile(lm_path[i]):
             print("%s is not found !!!" % lm_path[i])

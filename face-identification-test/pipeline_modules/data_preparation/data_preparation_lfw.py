@@ -25,13 +25,6 @@ class DataPreparationLFW:
         cprint('------------------------------------', 'cyan')
         cprint('DataPreparationLFW: started', 'cyan')
 
-        # clean working dir
-        # TODO Make a cleanup pipeline module
-        shutil.rmtree(context.working_dir_path + '/')
-        os.makedirs(context.working_dir_path)
-
-        # TODO Add to subdir of working
-
         complete_lfw_dataset_dir = context.input_dir_path + '/' + self._lfw_dataset_dir
         entry_counter = 0
 
@@ -81,7 +74,7 @@ class DataPreparationLFW:
 
 
     def add_open_testing_entry(self, context, id, is_actual_match):
-        context.open_testing_entry[id] = OpenTestingEntry(
+        context.open_testing_entries[id] = OpenTestingEntry(
             gallery_image_file_name=str(id) + '_g.jpg',
             input_image_file_name=str(id) + '_i.jpg',
             is_actual_match=(1 if is_actual_match else 0),

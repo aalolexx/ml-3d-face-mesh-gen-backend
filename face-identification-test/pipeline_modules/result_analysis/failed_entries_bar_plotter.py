@@ -12,8 +12,9 @@ from pipeline_util.enums import ComparisonMethods
 class FailedEntriesBarPlotter:
     """Plots a Bar chart showing the failed entrys per method
     from the context.panda_testing_entries table"""
-    def __init__(self, export_subdir: str) -> None:
+    def __init__(self, export_subdir: str, dataset_name: str) -> None:
         self._export_subdir = export_subdir
+        self._dataset_name = dataset_name
 
 
     def __call__(self, context: Context, next_step: NextStep) -> None:
@@ -44,8 +45,9 @@ class FailedEntriesBarPlotter:
                     data=pd_data,
                     palette=method_palette,
                     orient='h')
-        plt.title('Failed Entries')
-        plt.savefig(save_path + 'count_failed_entries.png')
+        plt.ylabel('')
+        plt.title('Failed Entries (using ' + self._dataset_name + ')')
+        plt.savefig(save_path + self._dataset_name + '_count_failed_entries.png', bbox_inches='tight', pad_inches=0)
         plt.close()
 
         cprint('FailedEntriesBarPlotter: done', 'green')

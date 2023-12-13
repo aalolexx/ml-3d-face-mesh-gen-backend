@@ -8,20 +8,20 @@ def headline_print(title):
 
 
 #headline_print('Testing with Yale')
-#run_analyzer(dataset=Datasets.YALE, test_entry_count=4)
+#run_analyzer(dataset=Datasets.YALE, test_entry_count=12)
 
 #headline_print('Testing with LFW')
-#run_analyzer(dataset=Datasets.LFW, test_entry_count=5)
+#run_analyzer(dataset=Datasets.LFW, test_entry_count=100)
 
 #headline_print('Testing with Multi-PIE')
-#run_analyzer(dataset=Datasets.MULTIPIE, test_entry_count=20)
+#run_analyzer(dataset=Datasets.MULTIPIE, test_entry_count=50)
 
 headline_print('Printing Results')
 
-#run_t1()
-#run_t2()
-#run_t3()
-#run_t4()
-#run_t5()
+run_t1()
+run_t2()
+run_t3()
+run_t4()
+run_t5()
 run_t6()
-#run_t7()
+run_t7()

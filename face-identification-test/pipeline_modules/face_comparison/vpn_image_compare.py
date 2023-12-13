@@ -27,8 +27,8 @@ class VPNImageCompare:
             required_method = ComparisonMethods.BIDIRECTIONAL_VPN_COMPARE.name
 
         # Loop all open testing entries, get 2d encodings and save comparison result to testing results
-        print('comparing ' + str(len(context.open_testing_entry.items())) + ' image pairs')
-        for id, testing_entry in context.open_testing_entry.items():
+        print('comparing ' + str(len(context.open_testing_entries.items())) + ' image pairs')
+        for id, testing_entry in context.open_testing_entries.items():
             try:
                 if self._comparison_framework == ComparisonFramework.FACE_RECOGNITION:
                     prediction = self.face_recognition_compare(context, testing_entry, id, required_method)

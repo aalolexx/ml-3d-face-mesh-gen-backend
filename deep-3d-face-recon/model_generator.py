@@ -1,13 +1,13 @@
-#
-# OWN CUSTOM SELF WRITTEN FILE
-#
+"""
+OWN CUSTOM SELF WRITTEN FILE
+"""
 from models.bfm import ParametricFaceModel
 import torch
 import numpy as np
 from util.nvdiffrast import MeshRenderer
 
 # OPTS
-# TODO put in conf file
+# TODO Future: put in conf file
 bfm_folder = "../deep-3d-face-recon/BFM_2009"
 camera_d = 10.0
 focal = 1015.0
