@@ -41,10 +41,10 @@ class ScikitReporter:
                 'method': [method.title],
                 'num_pos': [len(y_true == 1)],
                 'num_neg': [len(y_true == 0)],
-                'accuracy': [accuracy_score(y_true, y_pred)],
-                'precision': [precision_score(y_true, y_pred)],
-                'recall': [recall_score(y_true, y_pred)],
-                'roc_auc': [roc_auc_score(y_true, pf_cm['prediction'])]
+                'accuracy': [round(accuracy_score(y_true, y_pred), 3)],
+                'precision': [round(precision_score(y_true, y_pred), 3)],
+                'recall': [round(recall_score(y_true, y_pred), 3)],
+                'roc_auc': [round(roc_auc_score(y_true, pf_cm['prediction']), 3)]
             })
             file_path = save_path + self._dataset_name + '_report.csv'
             print_header = not os.path.exists(file_path)

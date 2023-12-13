@@ -93,7 +93,7 @@ def get_test_pipeline_for_dataset(dataset_prep_module, pkl_suffix):
 
 def get_pipeline_t1():
     yale_query = 'expression == "' + YaleExpressions.HAPPY.value + '"'
-    pie_query = 'rotation_angle == 0'
+    pie_query = 'rotation_angle == 0 and expression == "' + PIEExpressions.HAPPY.value + '"'
 
     return Pipeline[Context](
         SubdirCleaner(output=True, custom_path='t1'),
@@ -116,6 +116,7 @@ def get_pipeline_t1():
         # Result Plotting
         RocCurvePlotter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
         ConfusionMatrixPlotter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
+        FailedEntriesBarPlotter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
     )
 
 

@@ -17,12 +17,17 @@ class ResultTablePKLReader:
         cprint('------------------------------------', 'cyan')
         cprint('ResultTablePKLReader: started', 'cyan')
 
+        # Testing Result Entries
         df_te = pd.read_pickle(context.output_dir_path + '/' + self._pkl_file_name)
         if self._additional_data_query:
             df_te = df_te.query(self._additional_data_query)
         context.panda_testing_entries = df_te
 
+        # Failed Testing Entries
         df_failed_te = pd.read_pickle(context.output_dir_path + '/failed_' + self._pkl_file_name)
+        # Only get failed entries of the *filtered* testing results
+        filtered_entry_ids = df_te['open_testing_entry_id'].tolist()
+        df_failed_te = df_failed_te[df_failed_te.open_testing_entry_id.isin(filtered_entry_ids)]
         context.panda_failed_entries = df_failed_te
 
         cprint('ResultTablePKLReader: done', 'green')
