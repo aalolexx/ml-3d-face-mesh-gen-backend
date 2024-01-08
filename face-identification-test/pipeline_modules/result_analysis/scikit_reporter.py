@@ -33,14 +33,14 @@ class ScikitReporter:
             if pf_cm.shape[0] <= 0:
                 continue
 
-            y_true = pf_cm['is_actual_match']
-            y_pred = pf_cm['decision']
+            y_true = pf_cm['is_actual_match'].to_numpy()
+            y_pred = pf_cm['decision'].to_numpy()
             report = pd.DataFrame({
                 'dataset': [self._dataset_name],
                 'data query': [self._additional_data_query],
                 'method': [method.title],
-                'num_pos': [len(y_true == 1)],
-                'num_neg': [len(y_true == 0)],
+                'num_pos': [len(y_true[y_true == 1])],
+                'num_neg': [len(y_true[y_true == 0])],
                 'accuracy': [round(accuracy_score(y_true, y_pred), 3)],
                 'precision': [round(precision_score(y_true, y_pred), 3)],
                 'recall': [round(recall_score(y_true, y_pred), 3)],

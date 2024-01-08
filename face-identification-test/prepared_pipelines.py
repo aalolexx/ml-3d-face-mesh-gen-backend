@@ -104,9 +104,11 @@ def get_pipeline_t1():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
+        ScikitReporter(export_subdir='t1', dataset_name=Datasets.YALE.name),
         RocCurvePlotter(export_subdir='t1', dataset_name=Datasets.YALE.name),
         ConfusionMatrixPlotter(export_subdir='t1', dataset_name=Datasets.YALE.name),
 
+        # ---- DATASET SWITCH -----
         # Then the same for PIE
         ResultTablePKLReader(
             pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
@@ -114,6 +116,7 @@ def get_pipeline_t1():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
+        ScikitReporter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
         RocCurvePlotter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
         ConfusionMatrixPlotter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
         FailedEntriesBarPlotter(export_subdir='t1', dataset_name=Datasets.MULTIPIE.name),
@@ -123,8 +126,8 @@ def get_pipeline_t1():
 def get_pipeline_t2():
     t2_query = 'expression =="' + PIEExpressions.NORMAL.value + '"' \
                'and lighting == "' + PIELightings.CENTERLIGHT.value + '"'
-    query_extreme_rotations = 'rotation_angle <= -45 or rotation_angle > 0'
-    query_normal_rotations = 'rotation_angle > -45 or rotation_angle < 45'
+    query_extreme_rotations = 'rotation_angle <= -45 or rotation_angle >= 45'
+    query_normal_rotations = 'rotation_angle > -45 and rotation_angle < 45'
 
     return Pipeline[Context](
         SubdirCleaner(output=True, custom_path='t2'),
@@ -154,29 +157,56 @@ def get_pipeline_t2():
 
 
 def get_pipeline_t3():
+    t3_yale_query = 'expression == ""'
+    t3_pie_query = 'expression =="' + PIEExpressions.NORMAL.value + '"' \
+                   'and rotation_angle == 0'
+
     return Pipeline[Context](
         SubdirCleaner(output=True, custom_path='t3'),
         ResultTablePKLReader(
-            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl'),
+            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl',
+            additional_data_query=t3_yale_query
+        ),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
+        ScikitReporter(export_subdir='t3', dataset_name=Datasets.YALE.name),
         RocCurvePlotter(export_subdir='t3', dataset_name=Datasets.YALE.name),
         CategorizedBasedBarPlotter(group_by_category='lighting',
                                    export_subdir='t3',
                                    dataset_name=Datasets.YALE.name),
-        FailedEntriesBarPlotter(export_subdir='t3', dataset_name=Datasets.YALE.name)
+        FailedEntriesBarPlotter(export_subdir='t3', dataset_name=Datasets.YALE.name),
+
+        # ---- DATASET SWITCH -----
+        # Then the same for PIE
+        ResultTablePKLReader(
+            pkl_file_name='comparison_results_' + Datasets.MULTIPIE.name + '.pkl',
+            additional_data_query=t3_pie_query
+        ),
+        # Make Decisions from the given predictions
+        DecisionMaker(),
+        # Result Plotting
+        ScikitReporter(export_subdir='t3', dataset_name=Datasets.MULTIPIE.name),
+        RocCurvePlotter(export_subdir='t3', dataset_name=Datasets.MULTIPIE.name),
+        CategorizedBasedBarPlotter(group_by_category='lighting',
+                                   export_subdir='t3',
+                                   dataset_name=Datasets.MULTIPIE.name),
+        FailedEntriesBarPlotter(export_subdir='t3', dataset_name=Datasets.MULTIPIE.name)
     )
 
 
 def get_pipeline_t4():
+    t4_yale_query = 'lighting == ""'
     return Pipeline[Context](
         SubdirCleaner(output=True, custom_path='t4'),
         ResultTablePKLReader(
-            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl'),
+            pkl_file_name='comparison_results_' + Datasets.YALE.name + '.pkl',
+            additional_data_query=t4_yale_query
+        ),
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
+        ScikitReporter(export_subdir='t4', dataset_name=Datasets.YALE.name),
         RocCurvePlotter(export_subdir='t4', dataset_name=Datasets.YALE.name),
         CategorizedBasedBarPlotter(group_by_category='expression',
                                    export_subdir='t4',
@@ -196,6 +226,7 @@ def get_pipeline_t5():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
+        ScikitReporter(export_subdir='t5', dataset_name=Datasets.MULTIPIE.name),
         RocCurvePlotter(export_subdir='t5', dataset_name=Datasets.MULTIPIE.name),
         CategorizedBasedBarPlotter(group_by_category='rotation_angle',
                                    export_subdir='t5',
@@ -210,6 +241,8 @@ def get_pipeline_t5():
 def get_pipeline_t6():
     t6_query = 'expression !="' + PIEExpressions.NORMAL.value + '"' \
                'and lighting != "' + PIELightings.CENTERLIGHT.value + '"'
+    query_extreme_rotations = 'rotation_angle <= -45 or rotation_angle >= 45'
+    query_normal_rotations = 'rotation_angle > -45 and rotation_angle < 45'
     return Pipeline[Context](
         SubdirCleaner(output=True, custom_path='t6'),
         ResultTablePKLReader(
@@ -218,6 +251,14 @@ def get_pipeline_t6():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
+        ScikitReporter(export_subdir='t6',
+                       dataset_name=Datasets.MULTIPIE.name),
+        ScikitReporter(export_subdir='t6',
+                       dataset_name=Datasets.MULTIPIE.name,
+                       additional_data_query=query_extreme_rotations),
+        ScikitReporter(export_subdir='t6',
+                       dataset_name=Datasets.MULTIPIE.name,
+                       additional_data_query=query_normal_rotations),
         RocCurvePlotter(export_subdir='t6', dataset_name=Datasets.MULTIPIE.name),
         CategorizedBasedBarPlotter(group_by_category='rotation_angle',
                                    export_subdir='t6',
@@ -228,6 +269,8 @@ def get_pipeline_t6():
         CategorizedBasedBarPlotter(group_by_category='expression',
                                    export_subdir='t6',
                                    dataset_name=Datasets.MULTIPIE.name),
+        ConfusionMatrixPlotter(export_subdir='t6',
+                               dataset_name=Datasets.MULTIPIE.name),
         FailedEntriesBarPlotter(export_subdir='t6', dataset_name=Datasets.MULTIPIE.name)
     )
 
@@ -240,6 +283,7 @@ def get_pipeline_t7():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
+        ScikitReporter(export_subdir='t7', dataset_name=Datasets.LFW.name),
         RocCurvePlotter(export_subdir='t7', dataset_name=Datasets.LFW.name),
         ConfusionMatrixPlotter(export_subdir='t7', dataset_name=Datasets.LFW.name),
         FailedEntriesBarPlotter(export_subdir='t7', dataset_name=Datasets.LFW.name)
@@ -250,7 +294,7 @@ def get_pipeline_t7():
 # Run the prepared Pipelines
 #
 
-def run_analyzer(dataset: Datasets, test_entry_count: int, test_all_available: bool = False):
+def run_analyzer(dataset: Datasets, test_entry_count: int = -1, test_all_available: bool = False):
     data_prep_module = None
 
     if dataset == Datasets.YALE:
