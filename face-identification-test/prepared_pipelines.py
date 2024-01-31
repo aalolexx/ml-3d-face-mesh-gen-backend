@@ -107,6 +107,7 @@ def get_pipeline_t1():
         ScikitReporter(export_subdir='t1', dataset_name=Datasets.YALE.name),
         RocCurvePlotter(export_subdir='t1', dataset_name=Datasets.YALE.name),
         ConfusionMatrixPlotter(export_subdir='t1', dataset_name=Datasets.YALE.name),
+        FailedEntriesBarPlotter(export_subdir='t1', dataset_name=Datasets.YALE.name),
 
         # ---- DATASET SWITCH -----
         # Then the same for PIE
@@ -172,6 +173,7 @@ def get_pipeline_t3():
         # Result Plotting
         ScikitReporter(export_subdir='t3', dataset_name=Datasets.YALE.name),
         RocCurvePlotter(export_subdir='t3', dataset_name=Datasets.YALE.name),
+        ConfusionMatrixPlotter(export_subdir='t3', dataset_name=Datasets.YALE.name),
         CategorizedBasedBarPlotter(group_by_category='lighting',
                                    export_subdir='t3',
                                    dataset_name=Datasets.YALE.name),
@@ -188,6 +190,7 @@ def get_pipeline_t3():
         # Result Plotting
         ScikitReporter(export_subdir='t3', dataset_name=Datasets.MULTIPIE.name),
         RocCurvePlotter(export_subdir='t3', dataset_name=Datasets.MULTIPIE.name),
+        ConfusionMatrixPlotter(export_subdir='t3', dataset_name=Datasets.MULTIPIE.name),
         CategorizedBasedBarPlotter(group_by_category='lighting',
                                    export_subdir='t3',
                                    dataset_name=Datasets.MULTIPIE.name),
@@ -208,6 +211,7 @@ def get_pipeline_t4():
         # Result Plotting
         ScikitReporter(export_subdir='t4', dataset_name=Datasets.YALE.name),
         RocCurvePlotter(export_subdir='t4', dataset_name=Datasets.YALE.name),
+        ConfusionMatrixPlotter(export_subdir='t4', dataset_name=Datasets.YALE.name),
         CategorizedBasedBarPlotter(group_by_category='expression',
                                    export_subdir='t4',
                                    dataset_name=Datasets.YALE.name),
@@ -234,6 +238,7 @@ def get_pipeline_t5():
         CategorizedBasedBarPlotter(group_by_category='lighting',
                                    export_subdir='t5',
                                    dataset_name=Datasets.MULTIPIE.name),
+        ConfusionMatrixPlotter(export_subdir='t5', dataset_name=Datasets.MULTIPIE.name),
         FailedEntriesBarPlotter(export_subdir='t5', dataset_name=Datasets.MULTIPIE.name)
     )
 

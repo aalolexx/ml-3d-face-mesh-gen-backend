@@ -1,0 +1,40 @@
+********************************************
+*            DEPLOYMENT SHEET              *
+********************************************
+Autor: Alexander Ehrenhöfer, s0580781
+Bachelorarbeit: Machine Learning basierte Konstruktion von 3D Modellen aus 2D Bildern zur Optimierung der Gesichtserkennung
+
+
+In dieser Datei wird folgendes beschrieben
+1) Ordnerstruktur
+2) Anpassungen im Deep3DFaceRecon Framework Code
+3) Startanleitung
+
+
+1) ***
+Ordnerstruktur:
+
+- deep-3d-face-recon -> Leicht angepasster Code des deep3DFaceRecon Frameworks
+-- .. div Ordner des Frameworks ..
+-- playground -> Test und Experimentier Skripte
+
+- face-identification-test: Eigens implementierter Code der Testing Pipeline
+-- checkpoints --> TODO Checken ob das noch verwendet wird
+-- data
+-- -- input   --> Datasets
+-- -- misc    --> Konfigurationsfiles u.Ä.
+-- -- working --> Temporärer Folder für die Testing Pipeline
+-- -- output  --> Testergebnisse als .pkl Files und Ergebnisdiagramme für alle Tests
+-- pipeline   --> Definition der Pipeline Klassen für die Grundfunktionalität der Pipeline Architektur
+-- pipeline_modules      --> Tatsächliche Pipeline Module (Vergleichsmodule, Vorbereitungsmodule, etc)
+-- pipeline_utils        --> Diverse Util Methoden
+-- main.py               --> Entry Point der Testing Pipeline. Definiert welche sub-pipelines ausgeführt werden sollen
+-- prepared_pipelines.py --> Beinhaltet die Definition aller Pipelines (Reihenfolge der auszuführenden Module etc.)
+
+2) ***
+Anpassungen im Deep3DFaceRecon Framework
+
+
+3) ***
+Startanleitung
+
