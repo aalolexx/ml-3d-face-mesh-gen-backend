@@ -59,7 +59,7 @@ class RocCurvePlotter:
         for cur_method_roc in roc_data:
             sns.lineplot(x=cur_method_roc['fpr'],
                          y=cur_method_roc['tpr'],
-                         label=cur_method_roc['method_title'] + '(AUC = {:.2f})'.format(cur_method_roc['roc_auc']),
+                         label=cur_method_roc['method_title'] + '(AUC = {:.3f})'.format(cur_method_roc['roc_auc']),
                          color=cur_method_roc['color'])
 
         plt.savefig(save_path + self._dataset_name + '_ROC_curve.png', bbox_inches='tight', pad_inches=0)

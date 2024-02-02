@@ -93,7 +93,9 @@ def get_test_pipeline_for_dataset(dataset_prep_module, pkl_suffix):
 
 def get_pipeline_t1():
     yale_query = 'expression == "' + YaleExpressions.HAPPY.value + '"'
-    pie_query = 'rotation_angle == 0 and expression == "' + PIEExpressions.HAPPY.value + '"'
+    pie_query = 'rotation_angle == 0' \
+                'and expression == "' + PIEExpressions.HAPPY.value + '"' \
+                'and lighting == "' + PIELightings.CENTERLIGHT.value + '"'
 
     return Pipeline[Context](
         SubdirCleaner(output=True, custom_path='t1'),
@@ -222,6 +224,8 @@ def get_pipeline_t4():
 def get_pipeline_t5():
     t5_query = 'expression =="' + PIEExpressions.NORMAL.value + '"' \
                'and lighting != "' + PIELightings.CENTERLIGHT.value + '"'
+    query_extreme_rotations = 'rotation_angle <= -45 or rotation_angle >= 45'
+    query_normal_rotations = 'rotation_angle > -45 and rotation_angle < 45'
     return Pipeline[Context](
         SubdirCleaner(output=True, custom_path='t5'),
         ResultTablePKLReader(
@@ -230,7 +234,14 @@ def get_pipeline_t5():
         # Make Decisions from the given predictions
         DecisionMaker(),
         # Result Plotting
-        ScikitReporter(export_subdir='t5', dataset_name=Datasets.MULTIPIE.name),
+        ScikitReporter(export_subdir='t5',
+                       dataset_name=Datasets.MULTIPIE.name),
+        ScikitReporter(export_subdir='t5',
+                       dataset_name=Datasets.MULTIPIE.name,
+                       additional_data_query=query_extreme_rotations),
+        ScikitReporter(export_subdir='t5',
+                       dataset_name=Datasets.MULTIPIE.name,
+                       additional_data_query=query_normal_rotations),
         RocCurvePlotter(export_subdir='t5', dataset_name=Datasets.MULTIPIE.name),
         CategorizedBasedBarPlotter(group_by_category='rotation_angle',
                                    export_subdir='t5',

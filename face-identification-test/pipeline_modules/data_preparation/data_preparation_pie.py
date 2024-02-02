@@ -113,8 +113,7 @@ class DataPreparationPIE:
             if mismatch_counter >= self._entry_count_limit:
                 break
 
-        # TODO entry_count is not actual image value
-        print('successfully moved ' + str(entry_counter) + ' images to working dir and prepared testing entry')
+        print('successfully moved ' + str(entry_counter+mismatch_counter) + ' faces to working dir and prepared testing entry')
         cprint('DataPreparationPIE: done', 'green')
 
         next_step(context)

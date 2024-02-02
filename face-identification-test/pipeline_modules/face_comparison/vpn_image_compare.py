@@ -21,7 +21,6 @@ class VPNImageCompare:
         cprint('------------------------------------', 'cyan')
         cprint('VPNImageCompare: started', 'cyan')
 
-        prediction = 0
         required_method = ComparisonMethods.UNIDIRECTIONAL_VPN_COMPARE.name
         if self._bidirectional:
             required_method = ComparisonMethods.BIDIRECTIONAL_VPN_COMPARE.name
@@ -29,6 +28,7 @@ class VPNImageCompare:
         # Loop all open testing entries, get 2d encodings and save comparison result to testing results
         print('comparing ' + str(len(context.open_testing_entries.items())) + ' image pairs')
         for id, testing_entry in context.open_testing_entries.items():
+            prediction = 0
             try:
                 if self._comparison_framework == ComparisonFramework.FACE_RECOGNITION:
                     prediction = self.face_recognition_compare(context, testing_entry, id, required_method)

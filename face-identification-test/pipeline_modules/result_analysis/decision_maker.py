@@ -35,7 +35,7 @@ class DecisionMaker:
                 0
             )
 
-        pf.to_excel(r'' + context.output_dir_path + '/tmp_output.xlsx', index=False)
+        #pf.to_excel(r'' + context.output_dir_path + '/tmp_output.xlsx', index=False)
 
         cprint('DecisionMaker: done', 'green')
         next_step(context)
