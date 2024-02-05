@@ -8,13 +8,13 @@ def headline_print(title):
 
 
 #headline_print('Testing with Yale')
-run_analyzer(dataset=Datasets.YALE, test_all_available=True)
+#run_analyzer(dataset=Datasets.YALE, test_all_available=True)
 
 #headline_print('Testing with LFW')
-run_analyzer(dataset=Datasets.LFW, test_all_available=True)
+#run_analyzer(dataset=Datasets.LFW, test_all_available=True)
 
 #headline_print('Testing with Multi-PIE')
-run_analyzer(dataset=Datasets.MULTIPIE, test_all_available=True)
+#run_analyzer(dataset=Datasets.MULTIPIE, test_all_available=True)
 
 headline_print('Printing Results')
 

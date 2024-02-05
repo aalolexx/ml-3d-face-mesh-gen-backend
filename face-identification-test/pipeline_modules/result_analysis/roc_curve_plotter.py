@@ -8,8 +8,7 @@ import os
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
-
-
+from pipeline_util.plot_util import *
 
 class RocCurvePlotter:
     """Plots the ROC Curve from the context.panda_testing_entries table"""
@@ -47,8 +46,7 @@ class RocCurvePlotter:
             os.makedirs(save_path)
 
         # Plot the ROC curve
-        sns.set_theme()
-        sns.set_context('paper')
+        set_sns_style(sns)
         fig, ax = plt.subplots()
         plt.plot([0, 1], [0, 1], color='gray', lw=1, linestyle='--')
         ax.set_xlabel('False Positive Rate')
@@ -62,7 +60,7 @@ class RocCurvePlotter:
                          label=cur_method_roc['method_title'] + '(AUC = {:.3f})'.format(cur_method_roc['roc_auc']),
                          color=cur_method_roc['color'])
 
-        plt.savefig(save_path + self._dataset_name + '_ROC_curve.png', bbox_inches='tight', pad_inches=0)
+        save_fig(plt, save_path + self._dataset_name + '_ROC_curve.png')
         plt.close()
 
         cprint('RocCurvePlotter: done', 'green')

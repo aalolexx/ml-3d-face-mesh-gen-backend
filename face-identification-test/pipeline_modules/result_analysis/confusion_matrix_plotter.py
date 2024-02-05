@@ -9,6 +9,7 @@ import os
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
+from pipeline_util.plot_util import *
 
 class ConfusionMatrixPlotter:
     """Plots the Confusion Matrix from the context.panda_testing_entries table"""
@@ -40,11 +41,10 @@ class ConfusionMatrixPlotter:
             confusion_matrices.append(current_confusion)
 
         # Start Plotting
-        fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(16, 10))
+        fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(16, 11))
         axes = axes.flatten()  # for iteration
 
-        sns.set_theme()
-        sns.set_context('paper')
+        set_sns_style(sns)
 
         index = 0
         for method in ComparisonMethods:
@@ -65,7 +65,7 @@ class ConfusionMatrixPlotter:
             index += 1
 
         # Save Figure
-        plt.savefig(save_path + self._dataset_name + '_confusion_matrix.png', bbox_inches='tight', pad_inches=0)
+        save_fig(plt, save_path + self._dataset_name + '_confusion_matrix.png')
         plt.close()
 
         cprint('ConfusionMatrixPlotter: done', 'green')

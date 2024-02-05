@@ -11,7 +11,6 @@ def panda_testing_entries_from_context(context):
     rotation_angle_column = []
     expression_column = []
     lighting_column = []
-    # TODO also the other columns
     for i, row in df.iterrows():
         is_actual_match_column.append(context.open_testing_entries[row['open_testing_entry_id']].is_actual_match)
         rotation_angle_column.append(context.open_testing_entries[row['open_testing_entry_id']].rotation_angle)

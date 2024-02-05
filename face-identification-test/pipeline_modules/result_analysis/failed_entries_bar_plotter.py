@@ -8,6 +8,7 @@ import os
 from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
+from pipeline_util.plot_util import *
 
 class FailedEntriesBarPlotter:
     """Plots a Bar chart showing the failed entrys per method
@@ -36,18 +37,23 @@ class FailedEntriesBarPlotter:
         if not os.path.exists(save_path):
             os.makedirs(save_path)
 
-        sns.set_theme()
-        sns.set_context('paper')
+        set_sns_style(sns)
+
         method_palette = [m.color for m in ComparisonMethods]
 
-        sns.barplot(x='count',
+        ax = sns.barplot(x='count',
                     y='method',
                     data=pd_data,
                     palette=method_palette,
                     orient='h')
+
+        for bar in ax.patches:
+            xval = bar.get_width()
+            plt.text(xval+5, bar.get_y() + bar.get_height()/2, int(xval), ha='left', va='center')
+
         plt.ylabel('')
         plt.title('Failed Entries (using ' + self._dataset_name + ')')
-        plt.savefig(save_path + self._dataset_name + '_count_failed_entries.png', bbox_inches='tight', pad_inches=0)
+        save_fig(plt, save_path + self._dataset_name + '_count_failed_entries.png')
         plt.close()
 
         cprint('FailedEntriesBarPlotter: done', 'green')
