@@ -26,9 +26,12 @@ class FailedEntriesBarPlotter:
 
         failed_method_counter = []
         for method in ComparisonMethods:
+            fail_count = 0
+            if len(pf_failed_testing_entries) > 0:
+                fail_count = pf_failed_testing_entries['failed_method'].str.count(method.name).sum()
             failed_method_counter.append({
                 'method': method.title,
-                'count': pf_failed_testing_entries['failed_method'].str.count(method.name).sum()
+                'count': fail_count
             })
 
         pd_data = pd.DataFrame(failed_method_counter)

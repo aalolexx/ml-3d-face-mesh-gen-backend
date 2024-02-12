@@ -27,7 +27,9 @@ class ResultTablePKLReader:
         df_failed_te = pd.read_pickle(context.output_dir_path + '/failed_' + self._pkl_file_name)
         # Only get failed entries of the *filtered* testing results
         filtered_entry_ids = df_te['open_testing_entry_id'].tolist()
-        df_failed_te = df_failed_te[df_failed_te.open_testing_entry_id.isin(filtered_entry_ids)]
+        if len(df_failed_te) > 0:
+            df_failed_te = df_failed_te[df_failed_te.open_testing_entry_id.isin(filtered_entry_ids)]
+
         context.panda_failed_entries = df_failed_te
 
         cprint('ResultTablePKLReader: done', 'green')
