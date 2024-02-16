@@ -7,7 +7,7 @@ from pipeline_util.data_util import *
 
 
 class ResultTablePKLSaver:
-    """Saves the testing result to a pickle file"""
+    """Saves the testing results from the context var to a pickle file"""
 
     def __init__(self, pkl_file_name: str) -> None:
         self._pkl_file_name = pkl_file_name

@@ -71,7 +71,7 @@ def test(rank, opt, name='examples'):
         model.save_coeff(os.path.join(visualizer.img_dir, name.split(os.path.sep)[-1], 'epoch_%s_%06d'%(opt.epoch, 0),img_name+'.mat')) # save predicted coefficients
 
 #
-# Own custom method to just get the coefficients without visualizations
+# CHANGE EHRENHOEFER: Own custom method to just get the coefficients without visualizations
 #
 def get_coeffs_from_image(rank, opt, name='examples'):
     device = torch.device(rank)

@@ -7,7 +7,7 @@ from pipeline_modules.context import TestingResultEntry, FailedTestingEntry
 from pipeline_util.enums import ComparisonMethods
 
 class FaceRecognitionCompare2D:
-    """Compares two 2D Faces with face_recon's MMOD Method"""
+    """Compares two 2D Faces with python face_recon Method"""
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('FaceRecognitionCompare2D: started', 'cyan')

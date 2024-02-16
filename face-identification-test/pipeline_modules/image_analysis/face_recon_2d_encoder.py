@@ -27,7 +27,6 @@ class FaceRecon2DEncoder:
                 cprint('Could not find all required images for: ' + str(id), 'red')
                 continue
 
-            # TODO check how to do this on GPU
             gallery_image_encodings = face_recognition.face_encodings(gallery_image)
             input_image_encodings = face_recognition.face_encodings(input_image)
             gallery_image_name = testing_entry.gallery_image_file_name.split('.')[0]

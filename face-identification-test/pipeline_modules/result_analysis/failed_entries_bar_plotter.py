@@ -11,7 +11,7 @@ from pipeline_util.enums import ComparisonMethods
 from pipeline_util.plot_util import *
 
 class FailedEntriesBarPlotter:
-    """Plots a Bar chart showing the failed entrys per method
+    """Plots a Bar chart showing the failed entries per method
     from the context.panda_testing_entries table"""
     def __init__(self, export_subdir: str, dataset_name: str) -> None:
         self._export_subdir = export_subdir

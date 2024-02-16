@@ -26,7 +26,7 @@ class Lightings(Enum):
 
 class DataPreparationYale:
     """Process the Yale Dateset and move the wanted files to working dir.
-    Also create the open testing entries"""
+    Also prepares openTestingEntries List.s"""
     def __init__(self, yale_dataset_dir: str,
                  entry_count_limit: int) -> None:
         self._yale_dataset_dir = yale_dataset_dir

@@ -310,6 +310,8 @@ def get_pipeline_t7():
 # Run the prepared Pipelines
 #
 
+# Starts the pipeline regarding to the given dataset
+# analyzer: The Images in the dataset will be compared and the results save to a .pkl file
 def run_analyzer(dataset: Datasets, test_entry_count: int = -1, test_all_available: bool = False):
     data_prep_module = None
 
@@ -332,6 +334,9 @@ def run_analyzer(dataset: Datasets, test_entry_count: int = -1, test_all_availab
     pipeline = get_test_pipeline_for_dataset(data_prep_module, dataset.name)
     pipeline(ctx, error_handler)
 
+#
+# The follwing Pipelines require the analyzer part to be done, since it depends on the result .pkl files
+#
 
 def run_t1():
     ctx = get_new_context()

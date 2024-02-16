@@ -7,7 +7,7 @@ from pipeline_modules.context import TestingResultEntry
 from pipeline_util.enums import ComparisonMethods
 
 class DeepFaceCompare2D:
-    """Compares two 2D Faces with deep face"""
+    """Compares two 2D Faces with deep face with either VGG Face or Facenet Model"""
     def __init__(self, model_name: str) -> None:
         if model_name != 'VGG-Face' and model_name != 'Facenet':
             raise Exception('Only VGG-Face and Facenet Models are allowed for the deepface test')

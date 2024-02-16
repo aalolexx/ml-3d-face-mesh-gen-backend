@@ -6,7 +6,7 @@ from pipeline.pipeline import NextStep
 
 
 class ResultTablePKLReader:
-    """Reads the testing result from a pickle file"""
+    """Reads the testing result from a pickle file and saves them to the context var"""
 
     def __init__(self, pkl_file_name: str, additional_data_query: str = None) -> None:
         self._pkl_file_name = pkl_file_name

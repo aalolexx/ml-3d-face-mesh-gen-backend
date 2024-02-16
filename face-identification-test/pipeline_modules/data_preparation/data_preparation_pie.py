@@ -23,7 +23,7 @@ class Lightings(Enum):
 
 class DataPreparationPIE:
     """Process the PIE Dateset and move the wanted files to working dir.
-    Also create the open testing entries"""
+    Also prepares openTestingEntries List."""
     def __init__(self, pie_dataset_dir: str,
                  entry_count_limit: int) -> None:
         self._pie_dataset_dir = pie_dataset_dir
@@ -161,7 +161,6 @@ class DataPreparationPIE:
 
     def get_random_mismatch_entry_key(self, context, excluded_gallery_image_id: int, angle: int, expression: str, lighting: str):
         # todo optimize this filter performance
-        # TODO rethink logic of this one now that it is not only the rotation angle
         filtered_testing_entries = {
             k: v for k, v in context.open_testing_entries.items()
             if v.is_actual_match == 1 and (

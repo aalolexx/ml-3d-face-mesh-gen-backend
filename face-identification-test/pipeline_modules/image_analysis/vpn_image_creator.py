@@ -16,7 +16,7 @@ from pipeline.pipeline import NextStep
 
 
 class VPNImageCreator:
-    """Creates a Viewpoint Normalize Image (Frontal Face Image) Based of a 3DMM and a stadnard person image"""
+    """Creates a Viewpoint Normalize Image (Frontal Face Image) Based of a 3DMM and a standard person image"""
     def __init__(self, standard_person_subdir: str) -> None:
         self._standard_person_subdir = standard_person_subdir
         self._detector = mtcnn.MTCNN()
@@ -25,7 +25,6 @@ class VPNImageCreator:
         cprint('------------------------------------', 'cyan')
         cprint('VPNImageCreator: started', 'cyan')
 
-        # TODO Create own average person image
         standard_person_image, standard_face_mtcnn = self.prepare_standard_face(context)
 
         for id, testing_entry in context.open_testing_entries.items():

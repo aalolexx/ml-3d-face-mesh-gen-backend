@@ -16,10 +16,8 @@ Ordnerstruktur:
 
 - deep-3d-face-recon -> Leicht angepasster Code des deep3DFaceRecon Frameworks
 -- .. div Ordner des Frameworks ..
--- playground -> Test und Experimentier Skripte
 
 - face-identification-test: Eigens implementierter Code der Testing Pipeline
--- checkpoints --> TODO Checken ob das noch verwendet wird
 -- data
 -- -- input   --> Datasets
 -- -- misc    --> Konfigurationsfiles u.Ä.
@@ -31,10 +29,29 @@ Ordnerstruktur:
 -- main.py               --> Entry Point der Testing Pipeline. Definiert welche sub-pipelines ausgeführt werden sollen
 -- prepared_pipelines.py --> Beinhaltet die Definition aller Pipelines (Reihenfolge der auszuführenden Module etc.)
 
+- environment.yaml   --> Export / Import Informationen des Conda Environments
+
 2) ***
 Anpassungen im Deep3DFaceRecon Framework
+
+In folgenden Dateien wurde das deep3DFaceRecon Framwork angepasst/verändert. Die genauen Linien sind im jeweiligen File mit "CHANGE EHRENHOEFER" kommentiert:
+- test_face_recon.py
+- model_generator.py
 
 
 3) ***
 Startanleitung
 
+Python Version: 3.6.15 (Nicht neuer wegen alten deep3DFaceRecon Dependencies)
+
+Das Python Projekt wurde als Conda Environment umgesetzt. Es empfiehlt sich also das Projekt auch als solches zu starten.
+Dazu wurden alle nötigen Informationen im environment.yaml gespeichert.
+Um anhand dieser Informationen ein neues Conda Env aufzusetzten kann folgender Befehl ausgeführt werden:
+$ conda env create --file environment.yaml
+
+Um die Testing Pipeline dann zu starten:
+- Verlangte Konfigurationen im main.py vornehmen
+- ./face-identification-test/main.py starten per Konsole. (python main.py)
+
+Für das deep3DFaceRecon Framework sind alle benötigten Dateien und konfiguration in diesem Projekt enthalten.
+Falls dies angepasst werden soll, ist das Framework hier dokumentiert: https://github.com/sicxu/Deep3DFaceRecon_pytorch

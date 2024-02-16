@@ -14,7 +14,7 @@ from pipeline.pipeline import NextStep
 
 
 class Deep3DCoefficientGenerator:
-    """Runs the deep 3d face_recon network and saves the coefficients to the context var"""
+    """Runs the deep 3d face_recon network and saves the coefficients to the context var."""
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('Deep3DCoefficientGenerator: started', 'cyan')

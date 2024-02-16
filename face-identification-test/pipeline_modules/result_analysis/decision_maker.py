@@ -8,7 +8,8 @@ from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
 
 class DecisionMaker:
-    """Gets the optimal Threshold for each comparison method and makes an actual decision from the given prediction"""
+    """Calculates the optimal Threshold for each comparison method
+    and makes an actual decision from the given predictions"""
     def __call__(self, context: Context, next_step: NextStep) -> None:
         cprint('------------------------------------', 'cyan')
         cprint('DecisionMaker: started', 'cyan')

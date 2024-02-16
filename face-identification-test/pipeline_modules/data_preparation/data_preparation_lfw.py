@@ -9,8 +9,9 @@ from pipeline_modules.context import OpenTestingEntry
 
 
 class DataPreparationLFW:
-    """Finds Pairs and mis Pairs from LFW Datasets and moves
-    them to the working dir with the correct naming"""
+    """Finds Matches and Mismatches from LFW Datasets and copies
+    them to the working dir with the correct naming.
+    Also prepares openTestingEntries List."""
     def __init__(self, lfw_dataset_dir: str,
                  csv_matchpairs_path: str,
                  csv_mismatchpairs_path: str,

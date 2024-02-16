@@ -11,7 +11,7 @@ from pipeline_util.enums import ComparisonMethods
 
 
 class ScikitReporter:
-    """Creates a SciKit Report Summary and exports it to a csv"""
+    """Creates a Report of the method results and exports it to a csv"""
     def __init__(self, export_subdir: str, dataset_name: str, additional_data_query: str = None) -> None:
         self._export_subdir = export_subdir
         self._dataset_name = dataset_name
