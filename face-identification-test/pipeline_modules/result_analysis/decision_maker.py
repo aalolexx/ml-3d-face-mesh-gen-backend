@@ -7,6 +7,7 @@ from pipeline_modules.context import Context
 from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
 
+
 class DecisionMaker:
     """Calculates the optimal Threshold for each comparison method
     and makes an actual decision from the given predictions"""

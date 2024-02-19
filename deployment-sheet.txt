@@ -43,11 +43,13 @@ In folgenden Dateien wurde das deep3DFaceRecon Framwork angepasst/verändert. Di
 Startanleitung
 
 Python Version: 3.6.15 (Nicht neuer wegen alten deep3DFaceRecon Dependencies)
+Es wird empfholen das Projekt mit PyCharm zu öffnen.
 
-Das Python Projekt wurde als Conda Environment umgesetzt. Es empfiehlt sich also das Projekt auch als solches zu starten.
-Dazu wurden alle nötigen Informationen im environment.yaml gespeichert.
+Das Python Projekt wurde als Conda Environment umgesetzt. Das Projekt sollte auch als solches gestartet werden.
+Dazu wurden alle nötigen Informationen im ./environment.yaml gespeichert.
 Um anhand dieser Informationen ein neues Conda Env aufzusetzten kann folgender Befehl ausgeführt werden:
 $ conda env create --file environment.yaml
+$ conda activate backend_deep3d_p36
 
 Um die Testing Pipeline dann zu starten:
 - Verlangte Konfigurationen im main.py vornehmen

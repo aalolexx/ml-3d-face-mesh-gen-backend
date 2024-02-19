@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 from pipeline_util.enums import ComparisonMethod
 
+
 @dataclass
 class TestingResultEntry:
     open_testing_entry_id: int

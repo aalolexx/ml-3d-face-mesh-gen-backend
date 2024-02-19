@@ -10,6 +10,7 @@ from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
 from pipeline_util.plot_util import *
 
+
 class FailedEntriesBarPlotter:
     """Plots a Bar chart showing the failed entries per method
     from the context.panda_testing_entries table"""

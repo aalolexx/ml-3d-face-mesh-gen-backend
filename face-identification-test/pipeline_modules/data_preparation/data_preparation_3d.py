@@ -60,7 +60,7 @@ class DataPreparation3D:
 
 
     def get_required_landmarks(self, face_rect):
-        # Refered to dlib documentation to get the correct landmark indexes
+        # Refer to dlib documentation to get the correct landmark indexes
         return [
             face_rect['keypoints']['left_eye'],
             face_rect['keypoints']['right_eye'],

@@ -56,7 +56,6 @@ class DataPreparationPIE:
         faces_folder_names = os.listdir(complete_pie_dataset_dir)
         for face in faces_folder_names:
             # Copy frontal image
-
             self.copy_image_to_working_dir(context,
                                            face,
                                            self._frontal_camera,

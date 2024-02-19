@@ -42,7 +42,7 @@ renderer = MeshRenderer(
 
 
 #
-# normalizing pose, position, and gamma
+# Normalizing pose, position, and gamma
 #
 def normalize_coefficients(bfm_coeffs):
     # angles
@@ -57,7 +57,7 @@ def normalize_coefficients(bfm_coeffs):
 
 
 #
-# CALCULATE WITH COEFFITIENS
+# Create the 3DMM by given Coefficient Array
 #
 def forward_face(coeffs):
     pred_vertex, pred_tex, pred_color, pred_lm = facemodel.compute_for_render(coeffs)
@@ -66,7 +66,7 @@ def forward_face(coeffs):
 
 
 #
-# get numpy image from pred face
+# Get numpy image from pred face
 #
 def get_model_image(coeffs_array, normalize_face=True):
     if normalize_face:

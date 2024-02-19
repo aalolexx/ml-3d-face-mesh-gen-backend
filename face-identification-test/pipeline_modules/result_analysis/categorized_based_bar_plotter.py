@@ -11,6 +11,7 @@ from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
 from pipeline_util.plot_util import *
 
+
 class CategorizedBasedBarPlotter:
     """Plots a Bar chart showing the accuracies by category, eg. rotation angles
     from the context.panda_testing_entries table"""
@@ -59,7 +60,7 @@ class CategorizedBasedBarPlotter:
         method_palette = [m.color for m in ComparisonMethods]
 
         # Accuracy
-        # Batplot
+        # Barplot
         fig, ax = plt.subplots()
         ax.set_ylim(0.4, 1)
         sns.barplot(x='category_name', y='Accuracy', hue='method', data=seaborn_data, palette=method_palette)

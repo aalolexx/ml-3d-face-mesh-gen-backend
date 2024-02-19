@@ -10,6 +10,7 @@ from pipeline.pipeline import NextStep
 from pipeline_util.enums import ComparisonMethods
 from pipeline_util.plot_util import *
 
+
 class RocCurvePlotter:
     """Plots the ROC Curve from the context.panda_testing_entries table"""
     def __init__(self, export_subdir: str, dataset_name: str) -> None:
