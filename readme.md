@@ -35,4 +35,4 @@ damit überwunden werden können.
 ### Test T5: Head rotation, lighting and facial expression changes
 For T6, all property groups defined in the bachelor thesis were combined, thus creating the most challenging
 test conditions in this thesis. The multi-PIE dataset was used for testing.
-![Results T6](public_images/t5/MULTIPIE_accuracy_bars_byrotation_angle.png)
+![Results T6](face-identification-test/public_images/t5/MULTIPIE_accuracy_bars_byrotation_angle.png)
