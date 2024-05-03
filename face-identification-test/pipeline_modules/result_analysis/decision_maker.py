@@ -31,6 +31,7 @@ class DecisionMaker:
             )
             youden_j = tpr - fpr
             optimal_threshold = thresholds[np.argmax(youden_j)]
+
             pf.loc[(pf.method == method.name), 'decision'] = np.where(
                 method_result_entries['prediction'] > optimal_threshold,
                 1,

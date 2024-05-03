@@ -52,7 +52,7 @@ class VPNImageCreator:
         next_step(context)
 
 
-    def get_vpn_image_from_3d_coeffs(self, coeffs_3d, standard_person_image, standard_face_mtcnn):
+    def get_vpn_image_from_3d_coeffs(self, coeffs_3d, standard_person_image, standard_face_mtcnn, w_background=True):
         coeff_arr = get_coeff_array_from_coeff_dict(coeffs_3d)
         # Generate a 2D Face Image by the 3DMM Coefficient Vector
         model_image = get_model_image(coeff_arr)
@@ -73,6 +73,12 @@ class VPNImageCreator:
         model_image = cv2.normalize(model_image, None, 0, 255, cv2.NORM_MINMAX)
         model_image = model_image.astype(standard_person_image.dtype)
         model_image = cv2.resize(model_image, (0, 0), fx=scale_factor, fy=scale_factor)
+
+        if not w_background:
+            print('gen 3dmm image')
+            model_image = cv2.cvtColor(model_image, cv2.COLOR_BGR2RGB)
+            model_image = cv2.resize(model_image, (200, 200))
+            return model_image
 
         # Create a mask (The deep3D Model already has a black background)
         model_mask = np.copy(model_image)
